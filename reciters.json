@@ -1,1 +1,12 @@
 
+{
+  "reciters": [
+    { "id": 1, "name": "عبد الباسط عبد الصمد (مجوّد)", "image": "https://example.com/1.jpg" },
+    { "id": 2, "name": "عبد الباسط عبد الصمد (مرتل)", "image": "https://example.com/2.jpg" },
+    { "id": 3, "name": "عبد الرحمن السديس", "image": "https://example.com/3.jpg" },
+    { "id": 4, "name": "أبو بكر الشاطري", "image": "https://example.com/4.jpg" },
+    { "id": 5, "name": "مشاري راشد العفاسي", "image": "https://example.com/5.jpg" },
+    { "id": 6, "name": "سعود الشريم", "image": "https://example.com/6.jpg" },
+    { "id": 7, "name": "ناصر القطامي", "image": "https://example.com/7.jpg" }
+  ]
+}
