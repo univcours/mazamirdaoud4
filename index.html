@@ -3,7 +3,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
     <meta name="theme-color" content="#00ff88">
     <title>راديو مزامير داود | تلاوة دقيقة</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,21 +12,23 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        html { font-size: 16px; scroll-behavior: smooth; }
+        html { font-size: 16px; }
+        /* تعديل الـ body باش يحبس السكرول وياخد حجم الشاشة 100% */
         body {
             background: #0a0f1a;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            padding: 0.75rem;
+            height: 100vh; /* طول الشاشة بالكامل */
+            width: 100vw; /* عرض الشاشة بالكامل */
+            overflow: hidden; /* إخفاء السكرول نهائياً */
             font-family: 'Cairo', 'Almarai', sans-serif;
             position: relative;
-            overflow-x: hidden;
             transition: background 0.3s ease;
         }
         body.night-mode { background: #050a0f; }
         body.night-mode main { background: rgba(5, 10, 15, 0.85); }
+        
         .neon-bg {
             position: fixed;
             top: 0;
@@ -53,9 +55,11 @@
             33% { transform: translate(60px, -60px) scale(1.15); }
             66% { transform: translate(-40px, 50px) scale(0.9); }
         }
+        
+        /* الواجهة الرئيسية */
         main {
             max-width: 580px;
-            width: 100%;
+            width: 95%; /* باش يخلي شوية دالمساحة فالعرض */
             background: rgba(10, 20, 20, 0.78);
             backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
@@ -65,9 +69,12 @@
             overflow: hidden;
             position: relative;
             z-index: 1;
-            transition: all 0.3s ease;
+            /* حيدنا الـ transition من الـ transform باش التكبير والتصغير يكون سلس */
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+            transform-origin: center center;
         }
         main.glow-effect { box-shadow: 0 0 60px rgba(0, 255, 136, 0.55); }
+        
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -576,9 +583,6 @@
             font-size: 1rem;
         }
         @media (max-width: 600px) {
-            html { font-size: 14px; }
-            body { padding: 0.5rem; }
-            main { border-radius: 30px; }
             header { padding: 12px 35px 10px 35px; }
             .wall-clock { width: 100px; height: 100px; }
             .hour-hand { height: 28px; }
@@ -602,12 +606,6 @@
             .ctrl-btn { width: 42px; height: 42px; font-size: 18px; }
             .ayah-text { font-size: 0.9rem; }
             .buttons-row { gap: 8px; padding: 8px; }
-        }
-        @media (min-width: 1200px) {
-            main { max-width: 620px; }
-            .wall-clock { width: 140px; height: 140px; }
-            .clock-number { font-size: 13px; }
-            .ayah-text { font-size: 1.4rem; }
         }
         .neon-text { text-shadow: 0 0 8px #00ff88, 0 0 15px #00ff88; }
         .refresh-icon { cursor: pointer; margin-right: 6px; font-size: 0.65rem; transition: 0.2s; }
@@ -811,6 +809,38 @@
         (function(){
             'use strict';
             
+            // 🟢 دالة التكبير والتصغير التلقائي (Fit to Screen) 🟢
+            function fitToScreen() {
+                const player = document.getElementById('player');
+                if (!player) return;
+                
+                // نحيدو الـ scale مؤقتاً باش نعبرو الحجم الحقيقي
+                player.style.transform = 'none';
+                
+                const baseWidth = player.offsetWidth;
+                const baseHeight = player.offsetHeight;
+                
+                const winWidth = window.innerWidth;
+                const winHeight = window.innerHeight;
+                
+                // كنخليو واحد المساحة خاوية صغيرة (2% من الفوق والتحت والجناب)
+                const scaleX = (winWidth * 0.96) / baseWidth;
+                const scaleY = (winHeight * 0.96) / baseHeight;
+                
+                // كناخدو أصغر قيمة باش نضمنو بلي التطبيق كامل غيبان بلا ما يتقطع من الفوق أو الجناب
+                const scale = Math.min(scaleX, scaleY);
+                
+                // نطبقو التكبير/التصغير
+                player.style.transform = `scale(${scale})`;
+            }
+
+            // نخدمو الدالة فاش يتحل التطبيق وفاش يتبدل حجم الشاشة (دوران الهاتف مثلاً)
+            window.addEventListener('resize', fitToScreen);
+            window.addEventListener('load', fitToScreen);
+            // تفعيل سريع باش يتقاد الديزاين قبل ما يبان للمستخدم
+            setTimeout(fitToScreen, 50);
+            setTimeout(fitToScreen, 500);
+            
             // ===== دوال مساعدة =====
             let loadingTimeout = null;
             function showLoading(msg = 'جاري التحميل...') {
@@ -836,7 +866,6 @@
             }
             
             // ===== البيانات =====
-            // القائمة الاحتياطية بأرقام التلاوات الصحيحة من Quran.com API
             const FALLBACK_RECITERS = [
                 { id: 1, name: 'عبد الباسط عبد الصمد (مجوّد)' },
                 { id: 2, name: 'عبد الباسط عبد الصمد (مرتل)' },
@@ -852,10 +881,9 @@
                 { id: 12, name: 'عبد الله بصفر' }
             ];
             
-            // استعملنا رابط التلاوات عوض المقرئين
             const RECITERS_API_URL = 'https://api.quran.com/api/v4/resources/recitations?language=ar';
-            const RECITERS_CACHE_KEY = 'recitersListCache_v4'; // تغيير اسم الكاش للإصدار الجديد
-            const RECITERS_CACHE_TTL = 7 * 24 * 60 * 60 * 1000; // أسبوع
+            const RECITERS_CACHE_KEY = 'recitersListCache_v4';
+            const RECITERS_CACHE_TTL = 7 * 24 * 60 * 60 * 1000;
             
             let recitersList = [];
             
@@ -1485,7 +1513,7 @@
                     }
 
                     this.audio.src = finalAudioUrl;
-                    this.audio.load(); // إجبار المتصفح يشارجي الملف
+                    this.audio.load();
                     this.downloadLink.href = finalAudioUrl;
                     this.downloadLink.download = `${SURAH_NAMES[this.currentSurah]}_${reciterName}.mp3`;
                     
@@ -1525,6 +1553,9 @@
                         
                         currentVerseIndex = 0;
                         updateAyahDisplay();
+                        
+                        // بعدما يتشارجا الصوت نقادو الشاشة مرة خرى باش كلشي يجي هو هاداك
+                        fitToScreen();
                         
                         if (autoPlay) {
                             try {
