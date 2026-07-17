@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -11,7 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Cairo:wght@300;400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* جميع الأنماط كما هي - لم تتغير */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         html { font-size: 16px; }
         body {
@@ -853,8 +851,7 @@
             <div class="drawer-section">
                 <div class="drawer-section-title"><i class="fas fa-microphone-alt"></i> المقرئون</div>
                 <div class="drawer-grid">
-                    <div class="drawer-btn" id="drawerRefreshReciters">تحديث من API</div>
-                    <div class="drawer-btn" id="drawerRefreshGitHub">تحديث من GitHub</div>
+                    <div class="drawer-btn" id="drawerRefreshGitHub">تحديث الصور من GitHub</div>
                 </div>
             </div>
             <div class="drawer-section">
@@ -988,9 +985,10 @@
             'use strict';
 
             // =======================================================
-            //  إعدادات - قم بتعديل هذا الرابط لي指向 ملف JSON الخاص بك
+            //  رابط ملف الصور على GitHub (عدّل هذا الرابط)
+            //  الملف يجب أن يكون على صيغة JSON: { "id": "url", ... }
             // =======================================================
-            const GITHUB_RECITERS_URL = 'https://raw.githubusercontent.com/univcours/mazamirdaoud4/refs/heads/main/reciters.json';
+            const GITHUB_IMAGES_URL = 'https://raw.githubusercontent.com/your-username/your-repo/main/reciters.json';
             // مثال: 'https://raw.githubusercontent.com/ahmed/quran-radio/main/reciters.json'
 
             // ===== دوال مساعدة =====
@@ -1052,8 +1050,7 @@
                 return `https://ui-avatars.com/api/?name=${encoded}&background=${bg}&color=${color}&size=128&font-size=0.5&bold=true&rounded=true`;
             }
 
-            // ===== تحميل قائمة المقرئين =====
-            // الأولوية: GitHub ← API الرسمي ← الكاش ← القائمة الاحتياطية
+            // ===== تحميل قائمة المقرئين مع دمج الصور من GitHub =====
             const RECITERS_API_URL = 'https://api.quran.com/api/v4/resources/recitations?language=ar';
             const PROFILE_PICS_API_URL = 'https://api.quran.com/api/v4/resources/reciters?language=ar';
             const RECITERS_CACHE_KEY = 'recitersListCache_v5';
@@ -1062,7 +1059,7 @@
             let recitersList = [];
 
             async function loadRecitersList(forceRefresh = false) {
-                // محاولة تحميل من GitHub أولاً
+                // محاولة من الكاش أولاً
                 if (!forceRefresh) {
                     try {
                         const cached = JSON.parse(localStorage.getItem(RECITERS_CACHE_KEY) || 'null');
@@ -1073,27 +1070,9 @@
                     } catch(e) { }
                 }
 
-                // 1. GitHub
-                try {
-                    const resp = await fetch(GITHUB_RECITERS_URL);
-                    if (resp.ok) {
-                        const data = await resp.json();
-                        if (data.reciters && data.reciters.length) {
-                            recitersList = data.reciters.map(r => ({
-                                id: r.id,
-                                name: r.name,
-                                image: r.image || getAvatarUrl(r.name)
-                            }));
-                            // تخزين في الكاش
-                            localStorage.setItem(RECITERS_CACHE_KEY, JSON.stringify({ time: Date.now(), list: recitersList }));
-                            return 'github';
-                        }
-                    }
-                } catch(e) {
-                    console.warn('فشل تحميل من GitHub:', e);
-                }
-
-                // 2. API الرسمي
+                // 1. جلب القائمة من API الرسمي (الأسماء والأساليب)
+                let recitersFromApi = [];
+                let imagesMapApi = {};
                 try {
                     const [respRecitations, respReciters] = await Promise.all([
                         fetch(RECITERS_API_URL),
@@ -1104,61 +1083,73 @@
                     
                     const dataRecitations = await respRecitations.json();
                     
-                    let imagesMap = {};
                     if (respReciters && respReciters.ok) {
                         const dataReciters = await respReciters.json();
                         if (dataReciters.reciters) {
                             dataReciters.reciters.forEach(r => {
-                                imagesMap[r.id] = r.profile_picture;
+                                imagesMapApi[r.id] = r.profile_picture;
                             });
                         }
                     }
                     
                     if (dataRecitations.recitations && dataRecitations.recitations.length) {
-                        recitersList = dataRecitations.recitations.map(r => {
+                        recitersFromApi = dataRecitations.recitations.map(r => {
                             let name = (r.translated_name && r.translated_name.name) ? r.translated_name.name : r.reciter_name;
                             let style = r.style ? ` (${r.style})` : '';
-                            let fullName = name + style;
-                            
-                            let picPath = imagesMap[r.reciter_id];
-                            let imgUrl = null;
-                            if (picPath) {
-                                if (picPath.startsWith('http://') || picPath.startsWith('https://')) {
-                                    imgUrl = picPath;
-                                } else if (picPath.startsWith('/')) {
-                                    imgUrl = `https://static.qurancdn.com${picPath}`;
-                                } else {
-                                    imgUrl = `https://static.qurancdn.com/images/${picPath}`;
-                                }
-                            }
-                            
-                            if (!imgUrl) {
-                                imgUrl = getAvatarUrl(fullName);
-                            }
-                            
-                            return { 
-                                id: r.id, 
-                                name: fullName,
-                                image: imgUrl
+                            return {
+                                id: r.id,
+                                name: name + style
                             };
                         });
-                        
-                        recitersList.sort((a, b) => a.name.localeCompare(b.name, 'ar'));
-                        localStorage.setItem(RECITERS_CACHE_KEY, JSON.stringify({ time: Date.now(), list: recitersList }));
-                        return 'api';
+                        recitersFromApi.sort((a, b) => a.name.localeCompare(b.name, 'ar'));
                     }
-                    throw new Error('empty list');
                 } catch(e) {
-                    console.warn('API failed:', e);
-                    // 3. Cache قديم
-                    try {
-                        const cached = JSON.parse(localStorage.getItem(RECITERS_CACHE_KEY) || 'null');
-                        if (cached && cached.list && cached.list.length) {
-                            recitersList = cached.list;
-                            return 'stale-cache';
+                    console.warn('فشل جلب القائمة من API:', e);
+                }
+
+                // 2. جلب ملف الصور من GitHub
+                let imagesMapGitHub = {};
+                try {
+                    const imgResp = await fetch(GITHUB_IMAGES_URL);
+                    if (imgResp.ok) {
+                        imagesMapGitHub = await imgResp.json(); // { "1": "url", "7": "url", ... }
+                        console.log('✅ تم تحميل صور GitHub:', Object.keys(imagesMapGitHub).length);
+                    } else {
+                        console.warn('⚠️ فشل تحميل صور GitHub (استجابة غير صحيحة)');
+                    }
+                } catch(e) {
+                    console.warn('⚠️ فشل تحميل صور GitHub:', e);
+                }
+
+                // 3. بناء القائمة النهائية: دمج الأسماء مع الصور (GitHub أولاً، ثم API، ثم رمزية)
+                if (recitersFromApi.length > 0) {
+                    recitersList = recitersFromApi.map(r => {
+                        let imgUrl = null;
+                        // نبحث في صور GitHub
+                        if (imagesMapGitHub[r.id]) {
+                            imgUrl = imagesMapGitHub[r.id];
+                        } 
+                        // إن لم توجد، نبحث في صور API
+                        else if (imagesMapApi[r.id]) {
+                            let picPath = imagesMapApi[r.id];
+                            if (picPath.startsWith('http://') || picPath.startsWith('https://')) {
+                                imgUrl = picPath;
+                            } else if (picPath.startsWith('/')) {
+                                imgUrl = `https://static.qurancdn.com${picPath}`;
+                            } else {
+                                imgUrl = `https://static.qurancdn.com/images/${picPath}`;
+                            }
                         }
-                    } catch(e2) { }
-                    // 4. Fallback
+                        // إن لم توجد صورة على الإطلاق، نستعمل الصورة الرمزية
+                        if (!imgUrl) {
+                            imgUrl = getAvatarUrl(r.name);
+                        }
+                        return { ...r, image: imgUrl };
+                    });
+                    localStorage.setItem(RECITERS_CACHE_KEY, JSON.stringify({ time: Date.now(), list: recitersList }));
+                    return 'api_with_images';
+                } else {
+                    // في حالة فشل API، نستعمل قائمة احتياطية مع صور من GitHub إن أمكن
                     const FALLBACK = [
                         { id: 1, name: 'عبد الباسط عبد الصمد (مجوّد)' },
                         { id: 2, name: 'عبد الباسط عبد الصمد (مرتل)' },
@@ -1167,12 +1158,12 @@
                         { id: 7, name: 'مشاري راشد العفاسي' },
                         { id: 10, name: 'سعود الشريم' }
                     ];
-                    recitersList = FALLBACK.map(r => ({
-                        id: r.id,
-                        name: r.name,
-                        image: getAvatarUrl(r.name)
-                    }));
-                    return 'fallback';
+                    recitersList = FALLBACK.map(r => {
+                        let imgUrl = imagesMapGitHub[r.id] || getAvatarUrl(r.name);
+                        return { ...r, image: imgUrl };
+                    });
+                    localStorage.setItem(RECITERS_CACHE_KEY, JSON.stringify({ time: Date.now(), list: recitersList }));
+                    return 'fallback_with_images';
                 }
             }
 
@@ -1658,11 +1649,9 @@
                     hideLoading();
                     
                     let msg = '';
-                    if (source === 'github') msg = '✅ تم التحميل من GitHub';
-                    else if (source === 'api') msg = '✅ تم التحميل من API الرسمي';
+                    if (source === 'api_with_images') msg = '✅ تم التحميل من API مع صور GitHub';
                     else if (source === 'cache') msg = '📦 من الذاكرة المؤقتة';
-                    else if (source === 'stale-cache') msg = '📦 من ذاكرة قديمة';
-                    else if (source === 'fallback') msg = '⚠️ قائمة مختصرة احتياطية';
+                    else if (source === 'fallback_with_images') msg = '⚠️ قائمة احتياطية مع صور GitHub';
                     if (msg) showToast(msg);
                     
                     if (!getReciterById(this.currentReciter)) {
@@ -2139,17 +2128,12 @@
             document.getElementById('drawerSleep90').onclick = () => startSleepTimer(90);
             document.getElementById('drawerCancelSleep').onclick = cancelSleepTimer;
 
-            // ===== تحديث المقرئين =====
-            async function refreshReciters(source = 'api') {
-                showLoading('جاري تحديث القائمة...');
-                let result;
-                if (source === 'github') {
-                    // نمسح الكاش لنجبر التحميل من GitHub
-                    localStorage.removeItem(RECITERS_CACHE_KEY);
-                    result = await loadRecitersList(true);
-                } else {
-                    result = await loadRecitersList(true);
-                }
+            // ===== تحديث الصور من GitHub =====
+            document.getElementById('drawerRefreshGitHub').onclick = async () => {
+                showLoading('جاري تحديث الصور من GitHub...');
+                // نمسح الكاش لنجبر التحميل من جديد
+                localStorage.removeItem(RECITERS_CACHE_KEY);
+                const source = await loadRecitersList(true);
                 if (app) {
                     const savedReciter = app.currentReciter;
                     app.populateReciters();
@@ -2159,14 +2143,13 @@
                         app.currentReciter = recitersList[0].id;
                         app.reciterSelect.value = app.currentReciter;
                     }
+                    // تحديث الصورة الحالية
+                    const r = getReciterById(app.currentReciter);
+                    if (r) updateReciterSurahBar(r.name, SURAH_NAMES[app.currentSurah], r.image);
                 }
                 hideLoading();
-                let msg = source === 'github' ? '✅ تم التحديث من GitHub' : `✅ تم التحديث (${recitersList.length} مقرئ)`;
-                showToast(msg);
-            }
-
-            document.getElementById('drawerRefreshReciters').onclick = () => refreshReciters('api');
-            document.getElementById('drawerRefreshGitHub').onclick = () => refreshReciters('github');
+                showToast('✅ تم تحديث الصور من GitHub');
+            };
 
             // ===== تعزيز الصوت =====
             document.getElementById('drawerEqBoost').onclick = () => {
@@ -2279,7 +2262,7 @@
             };
             
             document.getElementById('drawerAbout').onclick = () => {
-                alert("🎵 راديو مزامير داود 🎵\n\n✨ الميزات:\n✓ قائمة المقرئين من GitHub أو API\n✓ توقيتات آيات رسمية\n✓ ساعة حائطية مضيئة\n✓ أوقات الصلاة\n✓ أزرار التزامن والإزاحة\n✓ مؤقت نوم\n✓ تعزيز الصوت\n✓ صور رمزية للحروف عند عدم توفر الصور\n✓ أزرار تحكم احترافية");
+                alert("🎵 راديو مزامير داود 🎵\n\n✨ الميزات:\n✓ قائمة المقرئين من API الرسمي\n✓ صور المقرئين من GitHub (قابلة للتخصيص)\n✓ توقيتات آيات رسمية\n✓ ساعة حائطية مضيئة\n✓ أوقات الصلاة\n✓ أزرار التزامن والإزاحة\n✓ مؤقت نوم\n✓ تعزيز الصوت\n✓ صور رمزية للحروف عند عدم توفر الصور\n✓ أزرار تحكم احترافية");
             };
 
             // ===== ألوان الثيم =====
