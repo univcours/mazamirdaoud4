@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Cairo:wght@300;400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* جميع الأنماط كما هي - لم تتغير */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         html { font-size: 16px; }
         body {
@@ -115,7 +116,6 @@
             transition: border-color 0.3s, background 0.3s;
         }
         
-        /* الصف العلوي: الساعة يسار، العنوان وسط، زر القائمة يمين */
         .top-row {
             display: flex;
             align-items: center;
@@ -183,7 +183,6 @@
             text-overflow: ellipsis;
         }
         
-        /* زر القائمة - أصبح عنصرًا عاديًا في الصف العلوي */
         .menu-btn {
             background: rgba(0, 255, 136, 0.2);
             border: 1px solid #00ff88;
@@ -203,7 +202,6 @@
         .menu-btn i { color: inherit; }
         .menu-btn:hover i { color: #1a1a2e; }
         
-        /* شريط المعلومات (اسم السورة - صورة المقرئ - اسم المقرئ) */
         .reciter-surah-bar {
             background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 100, 50, 0.25));
             border-radius: 30px;
@@ -424,7 +422,6 @@
             padding: 12px 15px;
             flex-wrap: wrap;
         }
-        /* أزرار التحكم الاحترافية */
         .ctrl-btn {
             position: relative;
             width: 56px;
@@ -791,6 +788,7 @@
     </style>
 </head>
 <body>
+    <!-- خلفية النيون -->
     <div class="neon-bg">
         <div class="neon-blob blob-n1"></div>
         <div class="neon-blob blob-n2"></div>
@@ -798,13 +796,16 @@
         <div class="neon-blob blob-n4"></div>
     </div>
 
+    <!-- شاشة التحميل -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="loading-spinner"></div>
         <div class="loading-text" id="loadingText">جاري تحميل السورة...</div>
     </div>
 
+    <!-- رسالة منبثقة -->
     <div id="toastMessage" class="toast-message"></div>
 
+    <!-- القائمة الجانبية -->
     <div class="drawer-overlay" id="drawerOverlay">
         <div class="drawer" id="drawer">
             <div class="drawer-header">
@@ -852,7 +853,8 @@
             <div class="drawer-section">
                 <div class="drawer-section-title"><i class="fas fa-microphone-alt"></i> المقرئون</div>
                 <div class="drawer-grid">
-                    <div class="drawer-btn" id="drawerRefreshReciters">تحديث القائمة</div>
+                    <div class="drawer-btn" id="drawerRefreshReciters">تحديث من API</div>
+                    <div class="drawer-btn" id="drawerRefreshGitHub">تحديث من GitHub</div>
                 </div>
             </div>
             <div class="drawer-section">
@@ -862,6 +864,7 @@
         </div>
     </div>
 
+    <!-- نافذة تغيير المدينة -->
     <div class="city-modal" id="cityModal">
         <div class="city-modal-content">
             <h3 style="color:#00ff88; text-align:center;"><i class="fas fa-map-marker-alt"></i> اختر مدينتك</h3>
@@ -877,7 +880,6 @@
     <!-- المحتوى الرئيسي -->
     <main id="player">
         <header>
-            <!-- الصف العلوي: الساعة يسار، العنوان وسط، زر القائمة يمين -->
             <div class="top-row">
                 <div class="clock-container">
                     <div class="wall-clock" id="wallClock">
@@ -898,7 +900,6 @@
                 <div class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></div>
             </div>
 
-            <!-- شريط المعلومات: اسم السورة - صورة المقرئ - اسم المقرئ -->
             <div class="reciter-surah-bar">
                 <div class="surah-info">
                     <i class="fas fa-quran"></i>
@@ -916,9 +917,7 @@
         </header>
 
         <div class="ayah-display" id="ayahDisplay">
-            <div class="ayah-text" id="ayahText">
-                <i class="fas fa-quran"></i> اضغط تشغيل لظهور الآية
-            </div>
+            <div class="ayah-text" id="ayahText"><i class="fas fa-quran"></i> اضغط تشغيل لظهور الآية</div>
             <div class="ayah-info">
                 <span id="ayahNumber">--</span>
                 <span id="surahAyahInfo">--</span>
@@ -927,12 +926,10 @@
                 <div class="ayah-progress-fill" id="ayahProgressFill"></div>
             </div>
             <span class="timing-badge exact" id="timingBadge" style="display:none;"></span>
-            <div class="toggle-ayah-btn" id="toggleAyahBtn">
-                <i class="fas fa-eye"></i> إخفاء الآيات
-            </div>
+            <div class="toggle-ayah-btn" id="toggleAyahBtn"><i class="fas fa-eye"></i> إخفاء الآيات</div>
         </div>
         
-        <div class="sync-buttons" id="syncButtons">
+        <div class="sync-buttons">
             <div class="sync-btn" id="syncPrevAyah"><i class="fas fa-step-backward"></i> سابق</div>
             <div class="sync-btn" id="syncNextAyah">تالي <i class="fas fa-step-forward"></i></div>
             <div class="sync-btn" id="resetSync"><i class="fas fa-sync-alt"></i> إعادة ضبط</div>
@@ -963,8 +960,7 @@
             <span id="offsetDisplay" style="color:#ffcc00;">الإزاحة: 0.0 ث</span>
         </div>
 
-        <!-- أزرار التحكم الاحترافية مع أزرار إضافية -->
-        <div class="buttons-row" id="controlsRow">
+        <div class="buttons-row">
             <button class="ctrl-btn small-btn" id="shuffleBtn" title="تشغيل عشوائي"><i class="fas fa-random"></i></button>
             <button class="ctrl-btn" id="back"><i class="fas fa-step-backward"></i></button>
             <button class="ctrl-btn play-btn" id="play"><i class="fas fa-play"></i></button>
@@ -984,16 +980,20 @@
             <a id="downloadBtn" href="#" download><i class="fas fa-download"></i> تحميل السورة</a>
         </article>
 
-        <div class="dua-text">
-            <i class="fas fa-hands-praying"></i> اضغط على زر <i class="fas fa-bars"></i> لفتح القائمة
-        </div>
+        <div class="dua-text"><i class="fas fa-hands-praying"></i> اضغط على زر <i class="fas fa-bars"></i> لفتح القائمة</div>
     </main>
 
     <script>
         (function(){
             'use strict';
-            
-            // دالة التكبير والتصغير التلقائي
+
+            // =======================================================
+            //  إعدادات - قم بتعديل هذا الرابط لي指向 ملف JSON الخاص بك
+            // =======================================================
+            const GITHUB_RECITERS_URL = 'https://raw.githubusercontent.com/your-username/your-repo/main/reciters.json';
+            // مثال: 'https://raw.githubusercontent.com/ahmed/quran-radio/main/reciters.json'
+
+            // ===== دوال مساعدة =====
             function fitToScreen() {
                 const player = document.getElementById('player');
                 if (!player) return;
@@ -1035,24 +1035,8 @@
                 t.classList.add('show');
                 setTimeout(() => t.classList.remove('show'), 2500);
             }
-            
-            // ===== البيانات =====
-            const FALLBACK_RECITERS = [
-                { id: 1, name: 'عبد الباسط عبد الصمد (مجوّد)', image: null },
-                { id: 2, name: 'عبد الباسط عبد الصمد (مرتل)', image: null },
-                { id: 3, name: 'عبد الرحمن السديس', image: null },
-                { id: 4, name: 'أبو بكر الشاطري', image: null },
-                { id: 7, name: 'مشاري راشد العفاسي', image: null },
-                { id: 10, name: 'سعود الشريم', image: null }
-            ];
-            
-            const RECITERS_API_URL = 'https://api.quran.com/api/v4/resources/recitations?language=ar';
-            const PROFILE_PICS_API_URL = 'https://api.quran.com/api/v4/resources/reciters?language=ar';
-            const RECITERS_CACHE_KEY = 'recitersListCache_v5';
-            const RECITERS_CACHE_TTL = 7 * 24 * 60 * 60 * 1000;
-            
-            let recitersList = [];
-            
+
+            // ===== الحصول على صورة رمزية من ui-avatars =====
             function getAvatarUrl(name) {
                 const cleanName = name.replace(/\([^)]*\)/g, '').trim();
                 const parts = cleanName.split(' ');
@@ -1067,8 +1051,18 @@
                 const bg = '0a1f15';
                 return `https://ui-avatars.com/api/?name=${encoded}&background=${bg}&color=${color}&size=128&font-size=0.5&bold=true&rounded=true`;
             }
-            
+
+            // ===== تحميل قائمة المقرئين =====
+            // الأولوية: GitHub ← API الرسمي ← الكاش ← القائمة الاحتياطية
+            const RECITERS_API_URL = 'https://api.quran.com/api/v4/resources/recitations?language=ar';
+            const PROFILE_PICS_API_URL = 'https://api.quran.com/api/v4/resources/reciters?language=ar';
+            const RECITERS_CACHE_KEY = 'recitersListCache_v5';
+            const RECITERS_CACHE_TTL = 7 * 24 * 60 * 60 * 1000;
+
+            let recitersList = [];
+
             async function loadRecitersList(forceRefresh = false) {
+                // محاولة تحميل من GitHub أولاً
                 if (!forceRefresh) {
                     try {
                         const cached = JSON.parse(localStorage.getItem(RECITERS_CACHE_KEY) || 'null');
@@ -1078,7 +1072,28 @@
                         }
                     } catch(e) { }
                 }
-                
+
+                // 1. GitHub
+                try {
+                    const resp = await fetch(GITHUB_RECITERS_URL);
+                    if (resp.ok) {
+                        const data = await resp.json();
+                        if (data.reciters && data.reciters.length) {
+                            recitersList = data.reciters.map(r => ({
+                                id: r.id,
+                                name: r.name,
+                                image: r.image || getAvatarUrl(r.name)
+                            }));
+                            // تخزين في الكاش
+                            localStorage.setItem(RECITERS_CACHE_KEY, JSON.stringify({ time: Date.now(), list: recitersList }));
+                            return 'github';
+                        }
+                    }
+                } catch(e) {
+                    console.warn('فشل تحميل من GitHub:', e);
+                }
+
+                // 2. API الرسمي
                 try {
                     const [respRecitations, respReciters] = await Promise.all([
                         fetch(RECITERS_API_URL),
@@ -1135,6 +1150,7 @@
                     throw new Error('empty list');
                 } catch(e) {
                     console.warn('API failed:', e);
+                    // 3. Cache قديم
                     try {
                         const cached = JSON.parse(localStorage.getItem(RECITERS_CACHE_KEY) || 'null');
                         if (cached && cached.list && cached.list.length) {
@@ -1142,18 +1158,29 @@
                             return 'stale-cache';
                         }
                     } catch(e2) { }
-                    recitersList = FALLBACK_RECITERS.map(r => ({
-                        ...r,
+                    // 4. Fallback
+                    const FALLBACK = [
+                        { id: 1, name: 'عبد الباسط عبد الصمد (مجوّد)' },
+                        { id: 2, name: 'عبد الباسط عبد الصمد (مرتل)' },
+                        { id: 3, name: 'عبد الرحمن السديس' },
+                        { id: 4, name: 'أبو بكر الشاطري' },
+                        { id: 7, name: 'مشاري راشد العفاسي' },
+                        { id: 10, name: 'سعود الشريم' }
+                    ];
+                    recitersList = FALLBACK.map(r => ({
+                        id: r.id,
+                        name: r.name,
                         image: getAvatarUrl(r.name)
                     }));
                     return 'fallback';
                 }
             }
-            
+
             function getReciterById(id) {
                 return recitersList.find(r => r.id === id) || null;
             }
-            
+
+            // ===== أسماء السور =====
             const SURAH_NAMES = [
                 "الفاتحة", "البقرة", "آل عمران", "النساء", "المائدة", "الأنعام", "الأعراف", "الأنفال", "التوبة", "يونس",
                 "هود", "يوسف", "الرعد", "إبراهيم", "الحجر", "النحل", "الإسراء", "الكهف", "مريم", "طه", "الأنبياء", "الحج",
@@ -1166,8 +1193,8 @@
                 "الليل", "الضحى", "الشرح", "التين", "العلق", "القدر", "البينة", "الزلزلة", "العاديات", "القارعة", "التكاثر",
                 "العصر", "الهمزة", "الفيل", "قريش", "الماعون", "الكوثر", "الكافرون", "النصر", "المسد", "الإخلاص", "الفلق", "الناس"
             ];
-            
-            // ===== المتغيرات العامة =====
+
+            // ===== متغيرات عامة =====
             let surahVersesCache = {};
             let currentVerses = [];
             let currentVerseIndex = 0;
@@ -1186,15 +1213,13 @@
             let prayerAlertEnabled = localStorage.getItem('prayerAlert') === 'true';
             let app = null;
             let currentOffset = 0;
-            
             let audioContext = null;
             let sourceNode = null;
             let gainNode = null;
             let filterNode = null;
-            
-            // متغيرات للتحكم في السرعة
             let playbackRate = 1.0;
-            
+
+            // ===== دوال الآيات والصوت =====
             async function fetchSurahVerses(surahIndex) {
                 const surahNumber = surahIndex + 1;
                 if (surahVersesCache[surahNumber]) return surahVersesCache[surahNumber];
@@ -1213,7 +1238,7 @@
                 currentVerses = [];
                 return [];
             }
-            
+
             async function fetchChapterAudio(recitationId, surahNumber) {
                 try {
                     const resp = await fetch(`https://api.quran.com/api/v4/chapter_recitations/${recitationId}/${surahNumber}?segments=true`);
@@ -1234,7 +1259,6 @@
                         }
                     }
                 } catch(e) { }
-                
                 try {
                     const resp = await fetch(`https://api.quran.com/api/v4/chapter_recitations/${recitationId}/${surahNumber}`);
                     if (resp.ok) {
@@ -1246,7 +1270,7 @@
                 } catch(e) { }
                 return null;
             }
-            
+
             function fallbackCalculateTimings(verses, totalDuration) {
                 if (!verses.length || !totalDuration || totalDuration <= 0) return [];
                 const weights = verses.map(v => Math.max(3, v.text.split(' ').length));
@@ -1260,7 +1284,7 @@
                 }
                 return timestamps;
             }
-            
+
             function setTimingBadge(mode) {
                 const badge = document.getElementById('timingBadge');
                 if (mode === 'exact') {
@@ -1275,7 +1299,7 @@
                     badge.style.display = 'none';
                 }
             }
-            
+
             function updateAyahDisplay() {
                 if (!ayahDisplayEnabled || !currentVerses.length || currentVerseIndex < 0 || currentVerseIndex >= currentVerses.length) {
                     if (!ayahDisplayEnabled) document.getElementById('ayahText').innerHTML = '<i class="fas fa-eye-slash"></i> تم إخفاء الآيات';
@@ -1290,11 +1314,11 @@
                 document.getElementById('ayahText').classList.add('ayah-highlight');
                 setTimeout(() => document.getElementById('ayahText').classList.remove('ayah-highlight'), 300);
             }
-            
+
             function clearAyahTracking() {
                 if (updateInterval) { clearInterval(updateInterval); updateInterval = null; }
             }
-            
+
             function startAyahTracking() {
                 clearAyahTracking();
                 if (manualSyncMode) return;
@@ -1318,7 +1342,7 @@
                     }
                 }, 100);
             }
-            
+
             function recalcTimingsWithOffset() {
                 if (!app || !app.audio.duration || !currentVerses.length) return;
                 const baseTimestamps = app.baseTimestamps || [];
@@ -1343,7 +1367,8 @@
                 document.getElementById('offsetDisplay').textContent = `الإزاحة: ${currentOffset.toFixed(1)} ث`;
                 showToast(`⚙️ الإزاحة: ${currentOffset.toFixed(1)} ثانية`);
             }
-            
+
+            // ===== الساعة والتاريخ =====
             function createClockNumbers() {
                 const container = document.getElementById('clockNumbers');
                 if (!container) return;
@@ -1391,7 +1416,8 @@
                     }
                 } catch(e) { }
             }
-            
+
+            // ===== أوقات الصلاة =====
             async function fetchPrayerTimes() {
                 const nextDiv = document.getElementById('nextPrayerText');
                 nextDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحميل...';
@@ -1492,8 +1518,8 @@
                 setInterval(() => { if (currentPrayerTimings) updateNextPrayer(); }, 60000);
                 startPrayerAlertMonitoring();
             }
-            
-            // تطبيق اللون على كل العناصر
+
+            // ===== تطبيق اللون =====
             function applyThemeColor(color) {
                 const main = document.getElementById('player');
                 const borderColor = color;
@@ -1515,7 +1541,6 @@
                     }
                 });
                 
-                document.getElementById('progress-bar').style.setProperty('--track-color', color);
                 const thumbStyle = document.createElement('style');
                 thumbStyle.id = 'thumbStyle';
                 const oldThumb = document.getElementById('thumbStyle');
@@ -1582,7 +1607,8 @@
                 
                 localStorage.setItem('themeColor', color);
             }
-            
+
+            // ===== فئة RadioApp =====
             class RadioApp {
                 constructor() {
                     this.audio = document.getElementById('audiofile');
@@ -1631,11 +1657,13 @@
                     this.recitersReady = true;
                     hideLoading();
                     
-                    if (source === 'fallback') {
-                        showToast('⚠️ تعذر جلب القائمة الكاملة — قائمة مختصرة مؤقتة');
-                    } else if (source === 'stale-cache') {
-                        showToast('📦 تم استخدام قائمة مخزنة (بدون إنترنت)');
-                    }
+                    let msg = '';
+                    if (source === 'github') msg = '✅ تم التحميل من GitHub';
+                    else if (source === 'api') msg = '✅ تم التحميل من API الرسمي';
+                    else if (source === 'cache') msg = '📦 من الذاكرة المؤقتة';
+                    else if (source === 'stale-cache') msg = '📦 من ذاكرة قديمة';
+                    else if (source === 'fallback') msg = '⚠️ قائمة مختصرة احتياطية';
+                    if (msg) showToast(msg);
                     
                     if (!getReciterById(this.currentReciter)) {
                         this.currentReciter = recitersList[0].id;
@@ -1943,8 +1971,8 @@
                     localStorage.setItem('radio_repeat', this.repeatSegment);
                 }
             }
-            
-            // تحديث شريط المقرئ مع الصورة
+
+            // ===== تحديث شريط المقرئ =====
             function updateReciterSurahBar(reciterName, surahName, imageUrl) {
                 document.getElementById('currentReciterName').innerText = reciterName;
                 document.getElementById('currentSurahName').innerText = surahName;
@@ -1983,9 +2011,10 @@
                     avatarText.textContent = initials.toUpperCase();
                 }
             }
-            
+
+            // ===== بدء التطبيق =====
             app = new RadioApp();
-            
+
             // ===== أحداث الأزرار الإضافية =====
             document.getElementById('syncPrevAyah').onclick = () => {
                 if (currentVerseIndex > 0) {
@@ -2067,7 +2096,7 @@
                 recalcTimingsWithOffset();
                 showToast("↺ تم إعادة ضبط الإزاحة");
             };
-            
+
             let ayahVisible = true;
             document.getElementById('toggleAyahBtn').onclick = () => {
                 ayahVisible = !ayahVisible;
@@ -2084,7 +2113,8 @@
                     document.getElementById('ayahText').innerHTML = '<i class="fas fa-eye-slash"></i> تم إخفاء الآيات';
                 }
             };
-            
+
+            // ===== مؤقت النوم =====
             function startSleepTimer(minutes) {
                 if (sleepTimerId) clearTimeout(sleepTimerId);
                 sleepTimerId = setTimeout(() => {
@@ -2108,10 +2138,18 @@
             document.getElementById('drawerSleep60').onclick = () => startSleepTimer(60);
             document.getElementById('drawerSleep90').onclick = () => startSleepTimer(90);
             document.getElementById('drawerCancelSleep').onclick = cancelSleepTimer;
-            
-            document.getElementById('drawerRefreshReciters').onclick = async () => {
-                showLoading('جاري تحديث قائمة المقرئين...');
-                const source = await loadRecitersList(true);
+
+            // ===== تحديث المقرئين =====
+            async function refreshReciters(source = 'api') {
+                showLoading('جاري تحديث القائمة...');
+                let result;
+                if (source === 'github') {
+                    // نمسح الكاش لنجبر التحميل من GitHub
+                    localStorage.removeItem(RECITERS_CACHE_KEY);
+                    result = await loadRecitersList(true);
+                } else {
+                    result = await loadRecitersList(true);
+                }
                 if (app) {
                     const savedReciter = app.currentReciter;
                     app.populateReciters();
@@ -2123,9 +2161,14 @@
                     }
                 }
                 hideLoading();
-                showToast(source === 'api' ? `✅ تم التحديث (${recitersList.length} مقرئ)` : '⚠️ تعذر التحديث من الإنترنت');
-            };
-            
+                let msg = source === 'github' ? '✅ تم التحديث من GitHub' : `✅ تم التحديث (${recitersList.length} مقرئ)`;
+                showToast(msg);
+            }
+
+            document.getElementById('drawerRefreshReciters').onclick = () => refreshReciters('api');
+            document.getElementById('drawerRefreshGitHub').onclick = () => refreshReciters('github');
+
+            // ===== تعزيز الصوت =====
             document.getElementById('drawerEqBoost').onclick = () => {
                 eqBoostActive = !eqBoostActive;
                 if (eqBoostActive) {
@@ -2176,7 +2219,7 @@
                     showToast("🔈 إلغاء تعزيز الصوت");
                 }
             };
-            
+
             document.getElementById('drawerNightMode').onclick = () => {
                 nightModeActive = !nightModeActive;
                 document.body.classList.toggle('night-mode', nightModeActive);
@@ -2207,7 +2250,7 @@
                     });
                 }
             };
-            
+
             document.getElementById('drawerChangeCity').onclick = () => {
                 document.getElementById('cityModal').classList.add('active');
                 document.getElementById('cityInput').value = userCity;
@@ -2236,10 +2279,10 @@
             };
             
             document.getElementById('drawerAbout').onclick = () => {
-                alert("🎵 راديو مزامير داود 🎵\n\n✨ الميزات:\n✓ قائمة المقرئين والصور مجلوبة من Quran.com\n✓ توقيتات آيات رسمية\n✓ ساعة حائطية مضيئة\n✓ أوقات الصلاة\n✓ أزرار التزامن والإزاحة\n✓ مؤقت نوم\n✓ تعزيز الصوت\n✓ صور رمزية للحروف عند عدم توفر الصور\n✓ أزرار تحكم احترافية (عشوائي، تسريع، تبطئة)");
+                alert("🎵 راديو مزامير داود 🎵\n\n✨ الميزات:\n✓ قائمة المقرئين من GitHub أو API\n✓ توقيتات آيات رسمية\n✓ ساعة حائطية مضيئة\n✓ أوقات الصلاة\n✓ أزرار التزامن والإزاحة\n✓ مؤقت نوم\n✓ تعزيز الصوت\n✓ صور رمزية للحروف عند عدم توفر الصور\n✓ أزرار تحكم احترافية");
             };
-            
-            // ===== تغيير اللون =====
+
+            // ===== ألوان الثيم =====
             const colors = ['#00ff88', '#ff3366', '#ffcc00', '#0066ff', '#aa00ff', '#ffffff'];
             document.querySelectorAll('#drawerColorPalette .drawer-color-dot').forEach((dot, idx) => {
                 dot.onclick = () => {
@@ -2248,7 +2291,8 @@
                     showToast("🎨 تم تغيير لون الثيم");
                 };
             });
-            
+
+            // ===== فتح وإغلاق القائمة =====
             const menuBtn = document.getElementById('menuBtn');
             const drawerOverlay = document.getElementById('drawerOverlay');
             const drawer = document.getElementById('drawer');
@@ -2256,16 +2300,16 @@
             menuBtn.onclick = () => { drawerOverlay.classList.add('active'); drawer.classList.add('active'); };
             closeDrawerBtn.onclick = () => { drawerOverlay.classList.remove('active'); drawer.classList.remove('active'); };
             drawerOverlay.onclick = (e) => { if (e.target === drawerOverlay) { drawerOverlay.classList.remove('active'); drawer.classList.remove('active'); } };
-            
+
             document.getElementById('refreshPrayerBtn').onclick = () => { fetchPrayerTimes(); };
             document.getElementById('locationBadge').onclick = () => document.getElementById('cityModal').classList.add('active');
-            
+
             createClockNumbers();
             updateClockHands();
             startPrayerAutoUpdate();
             document.getElementById('prayerCityName').innerText = userCity;
             document.getElementById('locationText').innerHTML = `${userCity}، ${userCountry}`;
-            
+
         })();
     </script>
 </body>
