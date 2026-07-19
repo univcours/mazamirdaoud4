@@ -408,8 +408,43 @@
         .prayer-item:hover { background: rgba(0, 255, 136, 0.3); transform: scale(1.02); }
         .prayer-name { font-size: 0.55rem; color: #aaa; }
         .prayer-time { font-size: 0.68rem; font-family: 'Orbitron', monospace; color: #00ff88; font-weight: bold; transition: color 0.3s; }
+        
+        /* ===== عنصر الصلاة القادمة المضيء ===== */
+        .prayer-item.next-prayer {
+            background: rgba(255, 204, 0, 0.25) !important;
+            border: 2px solid #ffcc00 !important;
+            box-shadow: 0 0 25px rgba(255, 204, 0, 0.5) !important;
+            animation: pulsePrayerItem 1.5s ease-in-out infinite alternate !important;
+            border-radius: 18px;
+            transform: scale(1.05);
+        }
+        .prayer-item.next-prayer .prayer-name {
+            color: #ffcc00 !important;
+            font-weight: bold;
+        }
+        .prayer-item.next-prayer .prayer-time {
+            color: #ffcc00 !important;
+            text-shadow: 0 0 15px rgba(255, 204, 0, 0.6) !important;
+        }
+        @keyframes pulsePrayerItem {
+            from { 
+                box-shadow: 0 0 15px rgba(255, 204, 0, 0.3);
+                border-color: #ffcc00;
+            }
+            to { 
+                box-shadow: 0 0 40px rgba(255, 204, 0, 0.7);
+                border-color: #ff8800;
+            }
+        }
+        
         .next-prayer-text { 
-            font-size: 0.65rem; color: #ffcc00; margin-top: 6px; background: rgba(0,0,0,0.3); border-radius: 18px; padding: 5px;
+            font-size: 0.65rem; 
+            color: #ffcc00; 
+            margin-top: 6px; 
+            background: rgba(0,0,0,0.3); 
+            border-radius: 18px; 
+            padding: 5px;
+            transition: all 0.3s ease;
         }
         .location-badge { font-size: 0.55rem; color: #88ffaa; margin-top: 4px; cursor: pointer; }
         .status-bar {
@@ -1020,6 +1055,29 @@
             overflow-y: auto;
         }
         
+        /* ===== إعدادات الإشعارات ===== */
+        .notification-settings {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+        }
+        .notification-settings label {
+            color: #88ffbb;
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 0;
+            cursor: pointer;
+        }
+        .notification-settings input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #00ff88;
+            cursor: pointer;
+        }
+        
         @media (max-width: 600px) {
             .wall-clock { width: 70px; height: 70px; }
             .hour-hand { height: 20px; }
@@ -1128,6 +1186,15 @@
                 <div class="drawer-grid">
                     <div class="drawer-btn" id="drawerChangeCity">تغيير المدينة</div>
                     <div class="drawer-btn" id="drawerPrayerAlert">أذان الصلاة</div>
+                    <div class="drawer-btn" id="drawerAutoLocation" style="grid-column: span 2;">📍 تحديث الموقع التلقائي</div>
+                </div>
+            </div>
+            <div class="drawer-section">
+                <div class="drawer-section-title"><i class="fas fa-bell"></i> إعدادات الإشعارات</div>
+                <div class="notification-settings">
+                    <label><input type="checkbox" id="notifPrayer5min" checked> ⏰ تنبيه قبل الصلاة بـ 5 دقائق</label>
+                    <label><input type="checkbox" id="notifPrayerTime" checked> 🕌 تنبيه عند وقت الأذان</label>
+                    <label><input type="checkbox" id="notifSalawat" checked> 🌹 تذكير بالصلاة على النبي (كل ساعتين)</label>
                 </div>
             </div>
             <div class="drawer-section">
@@ -1218,8 +1285,6 @@
                 <div class="title-area">
                     <img id="logoImg" class="logo-img" src="" alt="شعار التطبيق" style="display:none;">
                     <h1 id="appTitle"></h1>
-
-
                 </div>
                 <div class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></div>
             </div>
@@ -1268,11 +1333,11 @@
                 <i class="fas fa-sync-alt refresh-icon" id="refreshPrayerBtn" title="تحديث"></i>
             </div>
             <div class="prayer-times-row">
-                <div class="prayer-item"><div class="prayer-name">الفجر</div><div class="prayer-time" id="fajrTime">--:--</div></div>
-                <div class="prayer-item"><div class="prayer-name">الظهر</div><div class="prayer-time" id="dhuhrTime">--:--</div></div>
-                <div class="prayer-item"><div class="prayer-name">العصر</div><div class="prayer-time" id="asrTime">--:--</div></div>
-                <div class="prayer-item"><div class="prayer-name">المغرب</div><div class="prayer-time" id="maghribTime">--:--</div></div>
-                <div class="prayer-item"><div class="prayer-name">العشاء</div><div class="prayer-time" id="ishaTime">--:--</div></div>
+                <div class="prayer-item" id="prayer-fajr"><div class="prayer-name">الفجر</div><div class="prayer-time" id="fajrTime">--:--</div></div>
+                <div class="prayer-item" id="prayer-dhuhr"><div class="prayer-name">الظهر</div><div class="prayer-time" id="dhuhrTime">--:--</div></div>
+                <div class="prayer-item" id="prayer-asr"><div class="prayer-name">العصر</div><div class="prayer-time" id="asrTime">--:--</div></div>
+                <div class="prayer-item" id="prayer-maghrib"><div class="prayer-name">المغرب</div><div class="prayer-time" id="maghribTime">--:--</div></div>
+                <div class="prayer-item" id="prayer-isha"><div class="prayer-name">العشاء</div><div class="prayer-time" id="ishaTime">--:--</div></div>
             </div>
             <div class="next-prayer-text" id="nextPrayerText">⏳ جاري تحميل أوقات الصلاة...</div>
             <div class="location-badge" id="locationBadge"><i class="fas fa-map-marker-alt"></i> <span id="locationText">الدار البيضاء، المغرب</span></div>
@@ -1326,6 +1391,38 @@
                     this.style.display = 'none';
                     console.warn('⚠️ فشل تحميل اللوغو، سيتم عرض النص بدلاً منه');
                 };
+            }
+
+            // ===== تحديد الموقع التلقائي للمستخدم =====
+            async function getUserLocation() {
+                try {
+                    // محاولة الحصول على الموقع من المتصفح
+                    const position = await new Promise((resolve, reject) => {
+                        navigator.geolocation.getCurrentPosition(resolve, reject, {
+                            enableHighAccuracy: true,
+                            timeout: 10000,
+                            maximumAge: 60000
+                        });
+                    });
+                    
+                    const { latitude, longitude } = position.coords;
+                    
+                    // استخدام خدمة عكس الإحداثيات للحصول على اسم المدينة
+                    const response = await fetch(
+                        `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=ar`
+                    );
+                    const data = await response.json();
+                    
+                    return {
+                        city: data.city || data.locality || 'Casablanca',
+                        country: data.countryName || 'Morocco',
+                        lat: latitude,
+                        lng: longitude
+                    };
+                } catch (error) {
+                    console.warn('فشل تحديد الموقع التلقائي، سيتم استخدام الإعدادات الافتراضية:', error);
+                    return null;
+                }
             }
 
             // ===== دوال مساعدة =====
@@ -1440,7 +1537,6 @@
                     const path = 'reciters.json';
                     const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
                     
-                    // التحقق من وجود الملف
                     const checkResp = await fetch(apiUrl, {
                         headers: {
                             'Authorization': `token ${token}`,
@@ -1448,15 +1544,12 @@
                         }
                     });
                     
-                    // إذا كان الملف موجوداً، نعيده
                     if (checkResp.ok) {
                         const data = await checkResp.json();
                         return data;
                     }
                     
-                    // إذا لم يكن موجوداً، ننشئه
                     if (checkResp.status === 404) {
-                        // بناء القائمة الأساسية من API
                         const baseReciters = [];
                         try {
                             const resp = await fetch(RECITERS_API_URL);
@@ -1474,7 +1567,6 @@
                             }
                         } catch(e) {
                             console.warn('فشل جلب القائمة من API:', e);
-                            // قائمة احتياطية
                             const FALLBACK = [
                                 { id: 1, name: 'عبد الباسط عبد الصمد (مجوّد)' },
                                 { id: 2, name: 'عبد الباسط عبد الصمد (مرتل)' },
@@ -1489,7 +1581,6 @@
                             })));
                         }
                         
-                        // بناء كائن JSON
                         const jsonData = {};
                         baseReciters.forEach(r => {
                             jsonData[r.id] = r.image || '';
@@ -1497,7 +1588,6 @@
                         const jsonString = JSON.stringify(jsonData, null, 2);
                         const content = btoa(unescape(encodeURIComponent(jsonString)));
                         
-                        // رفع الملف
                         const uploadResp = await fetch(apiUrl, {
                             method: 'PUT',
                             headers: {
@@ -1586,11 +1676,9 @@
                         console.log('✅ تم تحميل صور GitHub:', Object.keys(imagesMapGitHub).length);
                     } else if (imgResp.status === 404) {
                         console.warn('⚠️ ملف reciters.json غير موجود، سيتم إنشاؤه عند أول استخدام');
-                        // محاولة إنشاء الملف إذا كان المستخدم مسجلاً
                         const token = prompt('🔑 الملف غير موجود، أدخل GitHub Token لإنشائه تلقائياً:');
                         if (token) {
                             await createRecitersFileOnGitHub(token);
-                            // إعادة المحاولة
                             const retryResp = await fetch(GITHUB_IMAGES_URL);
                             if (retryResp.ok) {
                                 imagesMapGitHub = await retryResp.json();
@@ -1683,6 +1771,12 @@
             let userCity = localStorage.getItem('prayerCity') || 'Casablanca';
             let userCountry = localStorage.getItem('prayerCountry') || 'Morocco';
             let prayerAlertEnabled = localStorage.getItem('prayerAlert') === 'true';
+            
+            // إعدادات الإشعارات
+            let notifPrayer5min = localStorage.getItem('notifPrayer5min') !== 'false';
+            let notifPrayerTime = localStorage.getItem('notifPrayerTime') !== 'false';
+            let notifSalawat = localStorage.getItem('notifSalawat') !== 'false';
+            
             let app = null;
             let currentOffset = 0;
             let audioContext = null;
@@ -1690,6 +1784,11 @@
             let gainNode = null;
             let filterNode = null;
             let playbackRate = 1.0;
+            
+            // متغيرات الإشعارات
+            let prayerNotifSent = {};
+            let salawatTimerId = null;
+            let prayerCheckInterval = null;
             
             // متغيرات لوحة الإدارة
             let editingReciterIndex = null;
@@ -1892,106 +1991,291 @@
                 } catch(e) { }
             }
 
-            // ===== أوقات الصلاة =====
-            async function fetchPrayerTimes() {
+            // ===== أوقات الصلاة والإشعارات =====
+            async function fetchPrayerTimes(lat = null, lng = null) {
                 const nextDiv = document.getElementById('nextPrayerText');
                 nextDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحميل...';
+                
                 try {
+                    let url;
                     const today = new Date();
-                    const url = `https://api.aladhan.com/v1/timingsByCity/${today.getDate()}-${today.getMonth()+1}-${today.getFullYear()}?city=${encodeURIComponent(userCity)}&country=${encodeURIComponent(userCountry)}&method=2`;
+                    const dateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+                    
+                    if (lat && lng) {
+                        // استخدام الإحداثيات للحصول على توقيت دقيق
+                        url = `https://api.islamicfinder.org/v1/prayer_times?latitude=${lat}&longitude=${lng}&date=${dateStr}`;
+                    } else {
+                        // استخدام المدينة والبلد
+                        url = `https://api.islamicfinder.org/v1/prayer_times?city=${encodeURIComponent(userCity)}&country=${encodeURIComponent(userCountry)}&date=${dateStr}`;
+                    }
+                    
                     const resp = await fetch(url);
                     const data = await resp.json();
+                    
+                    if (data.status === 'OK' && data.data) {
+                        const timings = data.data.timings || data.data;
+                        currentPrayerTimings = timings;
+                        
+                        document.getElementById('fajrTime').innerHTML = timings.Fajr || timings.fajr;
+                        document.getElementById('dhuhrTime').innerHTML = timings.Dhuhr || timings.dhuhr;
+                        document.getElementById('asrTime').innerHTML = timings.Asr || timings.asr;
+                        document.getElementById('maghribTime').innerHTML = timings.Maghrib || timings.maghrib;
+                        document.getElementById('ishaTime').innerHTML = timings.Isha || timings.isha;
+                        
+                        updateNextPrayer();
+                        prayerNotifSent = {};
+                        
+                        // تحديث اسم المدينة المعروض
+                        if (data.data.meta && data.data.meta.timezone) {
+                            const cityName = data.data.meta.timezone.split('/').pop().replace('_', ' ');
+                            document.getElementById('prayerCityName').innerText = cityName || userCity;
+                            document.getElementById('locationText').innerHTML = `${cityName || userCity}، ${userCountry}`;
+                        }
+                        
+                        showToast('✅ تم تحديث أوقات الصلاة بنجاح');
+                    } else {
+                        // إذا فشل IslamicFinder، جرب AlAdhan كبديل
+                        fallbackFetchPrayerTimes(lat, lng);
+                    }
+                } catch(e) {
+                    console.error('فشل جلب أوقات الصلاة من IslamicFinder:', e);
+                    // محاولة استخدام AlAdhan كبديل
+                    fallbackFetchPrayerTimes(lat, lng);
+                }
+            }
+
+            // ===== دالة احتياطية باستخدام AlAdhan API =====
+            async function fallbackFetchPrayerTimes(lat = null, lng = null) {
+                try {
+                    let url;
+                    const today = new Date();
+                    
+                    if (lat && lng) {
+                        url = `https://api.aladhan.com/v1/timings/${today.getDate()}-${today.getMonth()+1}-${today.getFullYear()}?latitude=${lat}&longitude=${lng}&method=21`;
+                    } else {
+                        url = `https://api.aladhan.com/v1/timingsByCity/${today.getDate()}-${today.getMonth()+1}-${today.getFullYear()}?city=${encodeURIComponent(userCity)}&country=${encodeURIComponent(userCountry)}&method=21`;
+                    }
+                    
+                    const resp = await fetch(url);
+                    const data = await resp.json();
+                    
                     if (data.code === 200 && data.data) {
                         const timings = data.data.timings;
                         currentPrayerTimings = timings;
+                        
                         document.getElementById('fajrTime').innerHTML = timings.Fajr;
                         document.getElementById('dhuhrTime').innerHTML = timings.Dhuhr;
                         document.getElementById('asrTime').innerHTML = timings.Asr;
                         document.getElementById('maghribTime').innerHTML = timings.Maghrib;
                         document.getElementById('ishaTime').innerHTML = timings.Isha;
+                        
                         updateNextPrayer();
+                        prayerNotifSent = {};
+                        
+                        if (data.data.meta && data.data.meta.timezone) {
+                            const cityName = data.data.meta.timezone.split('/').pop().replace('_', ' ');
+                            document.getElementById('prayerCityName').innerText = cityName || userCity;
+                            document.getElementById('locationText').innerHTML = `${cityName || userCity}، ${userCountry}`;
+                        }
+                        
+                        showToast('✅ تم تحديث أوقات الصلاة (AlAdhan)');
                     }
                 } catch(e) {
-                    nextDiv.innerHTML = '⚠️ سيتم إعادة المحاولة';
+                    console.error('فشل جلب أوقات الصلاة من AlAdhan:', e);
+                    document.getElementById('nextPrayerText').innerHTML = '⚠️ فشل التحميل، سيتم إعادة المحاولة';
                 }
             }
+            
             function updateNextPrayer() {
                 if (!currentPrayerTimings) return;
                 const now = new Date();
                 const currentMinutes = now.getHours() * 60 + now.getMinutes();
                 const prayers = [
-                    { name: 'الفجر', time: currentPrayerTimings.Fajr },
-                    { name: 'الظهر', time: currentPrayerTimings.Dhuhr },
-                    { name: 'العصر', time: currentPrayerTimings.Asr },
-                    { name: 'المغرب', time: currentPrayerTimings.Maghrib },
-                    { name: 'العشاء', time: currentPrayerTimings.Isha }
+                    { name: 'الفجر', id: 'prayer-fajr', time: currentPrayerTimings.Fajr || currentPrayerTimings.fajr },
+                    { name: 'الظهر', id: 'prayer-dhuhr', time: currentPrayerTimings.Dhuhr || currentPrayerTimings.dhuhr },
+                    { name: 'العصر', id: 'prayer-asr', time: currentPrayerTimings.Asr || currentPrayerTimings.asr },
+                    { name: 'المغرب', id: 'prayer-maghrib', time: currentPrayerTimings.Maghrib || currentPrayerTimings.maghrib },
+                    { name: 'العشاء', id: 'prayer-isha', time: currentPrayerTimings.Isha || currentPrayerTimings.isha }
                 ];
+                
+                // إزالة الإضاءة من جميع عناصر الصلاة
+                document.querySelectorAll('.prayer-item').forEach(el => {
+                    el.classList.remove('next-prayer');
+                });
+                
                 let nextPrayer = null;
                 let smallestDiff = Infinity;
+                let prayerTimes = {};
                 for (let p of prayers) {
                     if (p.time) {
                         const [hours, minutes] = p.time.split(':').map(Number);
                         const prayerMinutes = hours * 60 + minutes;
+                        prayerTimes[p.name] = prayerMinutes;
                         let diff = prayerMinutes - currentMinutes;
                         if (diff < 0) diff += 24 * 60;
-                        if (diff < smallestDiff) { smallestDiff = diff; nextPrayer = p; }
+                        if (diff < smallestDiff) { 
+                            smallestDiff = diff; 
+                            nextPrayer = p; 
+                        }
                     }
                 }
+                
+                // إضاءة عنصر الصلاة القادمة
                 if (nextPrayer) {
+                    const element = document.getElementById(nextPrayer.id);
+                    if (element) {
+                        element.classList.add('next-prayer');
+                    }
+                    
                     const hours = Math.floor(smallestDiff / 60);
                     const minutes = smallestDiff % 60;
                     let timeText = "";
                     if (hours > 0) timeText += `${hours} س `;
                     if (minutes > 0) timeText += `${minutes} د`;
                     if (hours === 0 && minutes === 0) timeText = "الآن";
+                    
                     document.getElementById('nextPrayerText').innerHTML = `🕌 الصلاة القادمة: ${nextPrayer.name} بعد ${timeText}`;
                 }
+                
+                // التحقق من الإشعارات
+                checkPrayerNotifications(prayerTimes, currentMinutes);
             }
-            function sendPrayerNotification(prayerName) {
+            
+            function checkPrayerNotifications(prayerTimes, currentMinutes) {
                 if (!prayerAlertEnabled) return;
-                if (notificationPermission && "Notification" in window) {
+                
+                const prayers = [
+                    { name: 'الفجر', time: currentPrayerTimings.Fajr || currentPrayerTimings.fajr },
+                    { name: 'الظهر', time: currentPrayerTimings.Dhuhr || currentPrayerTimings.dhuhr },
+                    { name: 'العصر', time: currentPrayerTimings.Asr || currentPrayerTimings.asr },
+                    { name: 'المغرب', time: currentPrayerTimings.Maghrib || currentPrayerTimings.maghrib },
+                    { name: 'العشاء', time: currentPrayerTimings.Isha || currentPrayerTimings.isha }
+                ];
+                
+                const now = new Date();
+                const todayKey = now.toDateString();
+                
+                for (let p of prayers) {
+                    if (!p.time) continue;
+                    const [h, m] = p.time.split(':').map(Number);
+                    const prayerMinutes = h * 60 + m;
+                    const diff = prayerMinutes - currentMinutes;
+                    
+                    if (notifPrayer5min && diff > 0 && diff <= 6) {
+                        const key = `${todayKey}_5min_${p.name}`;
+                        if (!prayerNotifSent[key]) {
+                            prayerNotifSent[key] = true;
+                            sendNotification(`⏰ تنبيه`, `باقي 5 دقائق على صلاة ${p.name}`);
+                        }
+                    }
+                    
+                    if (notifPrayerTime && diff >= -1 && diff <= 1) {
+                        const key = `${todayKey}_time_${p.name}`;
+                        if (!prayerNotifSent[key]) {
+                            prayerNotifSent[key] = true;
+                            sendNotification(`🕌 وقت الصلاة`, `حان الآن وقت صلاة ${p.name} في ${userCity}`);
+                        }
+                    }
+                }
+            }
+            
+            function sendNotification(title, body) {
+                if (!("Notification" in window)) return;
+                if (Notification.permission === "granted") {
                     try {
-                        new Notification(`🕌 وقت صلاة ${prayerName}`, {
-                            body: `حان الآن وقت صلاة ${prayerName} في ${userCity}`,
+                        new Notification(title, {
+                            body: body,
                             icon: '🕌'
                         });
                     } catch(e) {}
+                } else if (Notification.permission === "default") {
+                    Notification.requestPermission();
                 }
             }
+            
+            // ===== تذكير بالصلاة على النبي =====
+            function startSalawatReminder() {
+                if (salawatTimerId) clearInterval(salawatTimerId);
+                if (!notifSalawat) return;
+                
+                salawatTimerId = setInterval(() => {
+                    if (notifSalawat && Notification.permission === "granted") {
+                        const salawatTexts = [
+                            "اللهم صل على محمد وعلى آل محمد كما صليت على إبراهيم وعلى آل إبراهيم إنك حميد مجيد",
+                            "اللهم صل وسلم وبارك على سيدنا محمد",
+                            "صلى الله على محمد وعلى آل محمد كما صليت على إبراهيم",
+                            "اللهم صل على محمد وعلى آل محمد كما باركت على إبراهيم"
+                        ];
+                        const randomText = salawatTexts[Math.floor(Math.random() * salawatTexts.length)];
+                        try {
+                            new Notification("🌹 تذكير بالصلاة على النبي", {
+                                body: randomText,
+                                icon: '🌹'
+                            });
+                        } catch(e) {}
+                    }
+                }, 2 * 60 * 60 * 1000);
+            }
+
             function startPrayerAlertMonitoring() {
-                setInterval(() => {
-                    if (!prayerAlertEnabled || !currentPrayerTimings) return;
-                    const now = new Date();
-                    const currentMinutes = now.getHours() * 60 + now.getMinutes();
-                    const prayers = [
-                        { name: 'الفجر', time: currentPrayerTimings.Fajr },
-                        { name: 'الظهر', time: currentPrayerTimings.Dhuhr },
-                        { name: 'العصر', time: currentPrayerTimings.Asr },
-                        { name: 'المغرب', time: currentPrayerTimings.Maghrib },
-                        { name: 'العشاء', time: currentPrayerTimings.Isha }
-                    ];
-                    for (let p of prayers) {
-                        if (!p.time) continue;
-                        const [h, m] = p.time.split(':').map(Number);
-                        const prayerMinutes = h * 60 + m;
-                        const diff = Math.abs(prayerMinutes - currentMinutes);
-                        if (diff <= 1) {
-                            const lastSent = localStorage.getItem('lastPrayerNotification');
-                            const nowStr = new Date().toDateString() + p.name;
-                            if (lastSent !== nowStr) {
-                                sendPrayerNotification(p.name);
-                                localStorage.setItem('lastPrayerNotification', nowStr);
+                if (prayerCheckInterval) clearInterval(prayerCheckInterval);
+                prayerCheckInterval = setInterval(() => {
+                    if (currentPrayerTimings) {
+                        const now = new Date();
+                        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+                        const prayers = [
+                            { name: 'الفجر', time: currentPrayerTimings.Fajr || currentPrayerTimings.fajr },
+                            { name: 'الظهر', time: currentPrayerTimings.Dhuhr || currentPrayerTimings.dhuhr },
+                            { name: 'العصر', time: currentPrayerTimings.Asr || currentPrayerTimings.asr },
+                            { name: 'المغرب', time: currentPrayerTimings.Maghrib || currentPrayerTimings.maghrib },
+                            { name: 'العشاء', time: currentPrayerTimings.Isha || currentPrayerTimings.isha }
+                        ];
+                        let prayerTimes = {};
+                        for (let p of prayers) {
+                            if (p.time) {
+                                const [hours, minutes] = p.time.split(':').map(Number);
+                                prayerTimes[p.name] = hours * 60 + minutes;
                             }
-                            break;
                         }
+                        checkPrayerNotifications(prayerTimes, currentMinutes);
+                        updateNextPrayer();
                     }
                 }, 30000);
             }
+            
             function startPrayerAutoUpdate() {
-                fetchPrayerTimes();
-                setInterval(fetchPrayerTimes, 60 * 60 * 1000);
-                setInterval(() => { if (currentPrayerTimings) updateNextPrayer(); }, 60000);
+                // طلب تحديد الموقع التلقائي
+                (async () => {
+                    try {
+                        const location = await getUserLocation();
+                        if (location) {
+                            userCity = location.city;
+                            userCountry = location.country;
+                            localStorage.setItem('prayerCity', userCity);
+                            localStorage.setItem('prayerCountry', userCountry);
+                            document.getElementById('prayerCityName').innerText = userCity;
+                            document.getElementById('locationText').innerHTML = `${userCity}، ${userCountry}`;
+                            await fetchPrayerTimes(location.lat, location.lng);
+                        } else {
+                            await fetchPrayerTimes();
+                        }
+                    } catch(e) {
+                        console.warn('فشل تحديد الموقع، استخدام الإعدادات الافتراضية');
+                        await fetchPrayerTimes();
+                    }
+                })();
+                
+                setInterval(async () => {
+                    const location = await getUserLocation();
+                    if (location) {
+                        await fetchPrayerTimes(location.lat, location.lng);
+                    } else {
+                        await fetchPrayerTimes();
+                    }
+                }, 60 * 60 * 1000); // تحديث كل ساعة
+                
                 startPrayerAlertMonitoring();
+                startSalawatReminder();
             }
 
             // ===== تطبيق اللون =====
@@ -2080,7 +2364,6 @@
                 
                 document.getElementById('ayahText').style.textShadow = `0 0 5px ${color}`;
                 
-                // تحديث حدود اللوغو
                 const logo = document.getElementById('logoImg');
                 if (logo) {
                     logo.style.borderColor = borderColor;
@@ -2132,7 +2415,6 @@
                 }
                 
                 async init() {
-                    // تحميل اللوغو
                     loadLogo();
                     
                     showLoading('جاري تحميل قائمة المقرئين...');
@@ -2163,6 +2445,36 @@
                     
                     const savedColor = localStorage.getItem('themeColor') || '#00ff88';
                     applyThemeColor(savedColor);
+                    
+                    // تفعيل إعدادات الإشعارات
+                    document.getElementById('notifPrayer5min').checked = notifPrayer5min;
+                    document.getElementById('notifPrayerTime').checked = notifPrayerTime;
+                    document.getElementById('notifSalawat').checked = notifSalawat;
+                    
+                    document.getElementById('notifPrayer5min').onchange = function() {
+                        notifPrayer5min = this.checked;
+                        localStorage.setItem('notifPrayer5min', notifPrayer5min);
+                        showToast(notifPrayer5min ? '✅ تفعيل التنبيه قبل الصلاة' : '⏹️ إلغاء التنبيه قبل الصلاة');
+                    };
+                    document.getElementById('notifPrayerTime').onchange = function() {
+                        notifPrayerTime = this.checked;
+                        localStorage.setItem('notifPrayerTime', notifPrayerTime);
+                        showToast(notifPrayerTime ? '✅ تفعيل تنبيه وقت الأذان' : '⏹️ إلغاء تنبيه وقت الأذان');
+                    };
+                    document.getElementById('notifSalawat').onchange = function() {
+                        notifSalawat = this.checked;
+                        localStorage.setItem('notifSalawat', notifSalawat);
+                        if (notifSalawat) {
+                            startSalawatReminder();
+                            showToast('✅ تفعيل تذكير الصلاة على النبي');
+                        } else {
+                            if (salawatTimerId) {
+                                clearInterval(salawatTimerId);
+                                salawatTimerId = null;
+                            }
+                            showToast('⏹️ إلغاء تذكير الصلاة على النبي');
+                        }
+                    };
                     
                     await this.loadSurah(false);
                 }
@@ -2761,9 +3073,37 @@
                 document.getElementById('prayerCityName').innerText = userCity;
                 document.getElementById('locationText').innerHTML = `${userCity}، ${userCountry}`;
                 document.getElementById('cityModal').classList.remove('active');
-                await fetchPrayerTimes();
+                const location = await getUserLocation();
+                if (location) {
+                    await fetchPrayerTimes(location.lat, location.lng);
+                } else {
+                    await fetchPrayerTimes();
+                }
                 showToast(`✅ تم تغيير المدينة إلى ${userCity}`);
             };
+            
+            // ===== زر تحديث الموقع التلقائي =====
+            document.getElementById('drawerAutoLocation').onclick = async function() {
+                showToast('⏳ جاري تحديد موقعك...');
+                try {
+                    const location = await getUserLocation();
+                    if (location) {
+                        userCity = location.city;
+                        userCountry = location.country;
+                        localStorage.setItem('prayerCity', userCity);
+                        localStorage.setItem('prayerCountry', userCountry);
+                        document.getElementById('prayerCityName').innerText = userCity;
+                        document.getElementById('locationText').innerHTML = `${userCity}، ${userCountry}`;
+                        await fetchPrayerTimes(location.lat, location.lng);
+                        showToast(`✅ تم تحديد موقعك: ${userCity}, ${userCountry}`);
+                    } else {
+                        showToast('⚠️ لم نتمكن من تحديد موقعك، استخدم الإعدادات اليدوية');
+                    }
+                } catch(e) {
+                    showToast('⚠️ فشل تحديد الموقع، تأكد من إذن الموقع');
+                }
+            };
+            
             document.getElementById('closeCityBtn').onclick = () => document.getElementById('cityModal').classList.remove('active');
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') document.getElementById('cityModal').classList.remove('active');
@@ -2773,10 +3113,18 @@
                 prayerAlertEnabled = !prayerAlertEnabled;
                 localStorage.setItem('prayerAlert', prayerAlertEnabled);
                 showToast(prayerAlertEnabled ? "🔔 تم تفعيل أذان الصلاة" : "🔕 تم إيقاف أذان الصلاة");
+                if (prayerAlertEnabled) {
+                    startPrayerAlertMonitoring();
+                } else {
+                    if (prayerCheckInterval) {
+                        clearInterval(prayerCheckInterval);
+                        prayerCheckInterval = null;
+                    }
+                }
             };
             
             document.getElementById('drawerAbout').onclick = () => {
-                alert("🎵 راديو مزامير داود 🎵\n\n✨ الميزات:\n✓ قائمة المقرئين من API الرسمي\n✓ صور المقرئين من GitHub (قابلة للتخصيص)\n✓ توقيتات آيات رسمية\n✓ ساعة حائطية مضيئة\n✓ أوقات الصلاة\n✓ أزرار التزامن والإزاحة\n✓ مؤقت نوم\n✓ تعزيز الصوت\n✓ صور رمزية للحروف عند عدم توفر الصور\n✓ أزرار تحكم احترافية\n✓ تحويل تلقائي لصور WebP إلى PNG\n✓ لوحة إدارة مخفية لتعديل صور كل مقرئ على حدة\n✓ إضافة وحذف المقرئين يدوياً\n✓ إنشاء تلقائي لملف reciters.json في المستودع\n✓ الحذف نهائياً لجميع المستخدمين");
+                alert("🎵 راديو مزامير داود 🎵\n\n✨ الميزات:\n✓ قائمة المقرئين من API الرسمي\n✓ صور المقرئين من GitHub (قابلة للتخصيص)\n✓ توقيتات آيات رسمية\n✓ ساعة حائطية مضيئة\n✓ أوقات الصلاة مع إضاءة دائمة للصلاة القادمة\n✓ تحديد الموقع التلقائي للحصول على توقيتات دقيقة\n✓ إشعارات قبل الصلاة بـ 5 دقائق\n✓ إشعارات عند وقت الأذان\n✓ تذكير بالصلاة على النبي كل ساعتين\n✓ أزرار التزامن والإزاحة\n✓ مؤقت نوم\n✓ تعزيز الصوت\n✓ لوحة إدارة متكاملة");
             };
 
             // ===== ألوان الثيم =====
@@ -2798,7 +3146,14 @@
             closeDrawerBtn.onclick = () => { drawerOverlay.classList.remove('active'); drawer.classList.remove('active'); };
             drawerOverlay.onclick = (e) => { if (e.target === drawerOverlay) { drawerOverlay.classList.remove('active'); drawer.classList.remove('active'); } };
 
-            document.getElementById('refreshPrayerBtn').onclick = () => { fetchPrayerTimes(); };
+            document.getElementById('refreshPrayerBtn').onclick = async () => {
+                const location = await getUserLocation();
+                if (location) {
+                    await fetchPrayerTimes(location.lat, location.lng);
+                } else {
+                    await fetchPrayerTimes();
+                }
+            };
             document.getElementById('locationBadge').onclick = () => document.getElementById('cityModal').classList.add('active');
 
             createClockNumbers();
@@ -2813,7 +3168,6 @@
             let adminClickCount = 0;
             let adminTimer = null;
 
-            // تفعيل الزر المخفي بالضغط 5 مرات على الشعار أو اللوغو
             function handleAdminClick(e) {
                 adminClickCount++;
                 if (adminTimer) clearTimeout(adminTimer);
@@ -2858,7 +3212,6 @@
                 }
                 displayDiv.innerHTML = html;
                 
-                // أزرار التعديل
                 document.querySelectorAll('.reciter-item .edit-btn').forEach(btn => {
                     btn.onclick = function(e) {
                         e.stopPropagation();
@@ -2867,7 +3220,6 @@
                     };
                 });
                 
-                // أزرار الحذف
                 document.querySelectorAll('.reciter-item .delete-btn').forEach(btn => {
                     btn.onclick = function(e) {
                         e.stopPropagation();
@@ -2876,7 +3228,6 @@
                     };
                 });
                 
-                // النقر على اسم المقرئ
                 document.querySelectorAll('.reciter-item .name').forEach(el => {
                     el.parentElement.onclick = function() {
                         const index = parseInt(this.dataset.index);
@@ -2897,7 +3248,6 @@
                 document.getElementById('adminStatus').innerHTML = '';
             }
 
-            // ===== حذف المقرئ نهائياً (لكل المستخدمين) =====
             async function deleteReciterPermanently(index) {
                 if (index < 0 || index >= recitersList.length) return;
                 const r = recitersList[index];
@@ -2909,33 +3259,27 @@
                 statusDiv.style.color = '#ffcc00';
                 
                 try {
-                    // 1. حذف من القائمة المحلية
                     recitersList.splice(index, 1);
                     
-                    // 2. بناء JSON الجديد
                     const jsonData = {};
                     recitersList.forEach(r => {
                         jsonData[r.id] = r.image || '';
                     });
                     const jsonString = JSON.stringify(jsonData, null, 2);
                     
-                    // 3. طلب GitHub Token
                     const token = prompt('🔑 أدخل GitHub Token الخاص بك (صلاحية repo) لحذف المقرئ نهائياً:');
                     if (!token) {
                         statusDiv.innerHTML = '❌ تم الإلغاء';
                         statusDiv.style.color = '#ff3366';
-                        // إعادة المقرئ إلى القائمة
                         recitersList.splice(index, 0, r);
                         renderRecitersList();
                         return;
                     }
                     
-                    // 4. رفع الملف إلى GitHub
                     const repo = 'univcours/mazamirdaoud4';
                     const path = 'reciters.json';
                     const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
                     
-                    // الحصول على SHA
                     const getResp = await fetch(apiUrl, {
                         headers: {
                             'Authorization': `token ${token}`,
@@ -2951,7 +3295,6 @@
                         throw new Error(`فشل جلب الملف: ${getResp.status}`);
                     }
                     
-                    // رفع الملف
                     const content = btoa(unescape(encodeURIComponent(jsonString)));
                     const uploadData = {
                         message: `حذف المقرئ ${r.name} نهائياً من القائمة`,
@@ -2975,10 +3318,8 @@
                         throw new Error(`فشل الرفع: ${uploadResp.status} - ${errorData.message || 'خطأ غير معروف'}`);
                     }
                     
-                    // 5. تحديث الكاش المحلي
                     localStorage.setItem(RECITERS_CACHE_KEY, JSON.stringify({ time: Date.now(), list: recitersList }));
                     
-                    // 6. تحديث الواجهة
                     renderRecitersList();
                     if (app) {
                         app.populateReciters();
@@ -3002,7 +3343,6 @@
                     statusDiv.innerHTML = `❌ خطأ: ${error.message}`;
                     statusDiv.style.color = '#ff3366';
                     showToast(`❌ فشل الحذف: ${error.message}`);
-                    // إعادة المقرئ إلى القائمة
                     if (!recitersList.includes(r)) {
                         recitersList.splice(index, 0, r);
                         renderRecitersList();
@@ -3050,7 +3390,6 @@
                 editingReciterIndex = null;
             };
 
-            // ===== زر مسح الكاش المحلي =====
             document.getElementById('clearCacheBtn').onclick = function() {
                 if (confirm('🗑️ هل أنت متأكد من مسح جميع البيانات المخزنة محلياً؟\n(سيتم حذف صور المقرئين والإعدادات المحفوظة)')) {
                     localStorage.removeItem(RECITERS_CACHE_KEY);
@@ -3059,6 +3398,11 @@
                     localStorage.removeItem('lastReciterId');
                     localStorage.removeItem('radio_loop');
                     localStorage.removeItem('radio_repeat');
+                    localStorage.removeItem('notifPrayer5min');
+                    localStorage.removeItem('notifPrayerTime');
+                    localStorage.removeItem('notifSalawat');
+                    localStorage.removeItem('prayerCity');
+                    localStorage.removeItem('prayerCountry');
                     
                     showToast('✅ تم مسح الكاش المحلي');
                     document.getElementById('adminStatus').innerHTML = '✅ تم مسح الكاش المحلي بنجاح، سيتم إعادة تحميل الصفحة...';
@@ -3070,7 +3414,6 @@
                 }
             };
 
-            // ===== نافذة إضافة مقرئ =====
             document.getElementById('addReciterBtn').onclick = function() {
                 openAddReciterModal();
             };
@@ -3095,7 +3438,6 @@
                     );
                 }
                 
-                // استبعاد المقرئين الموجودين بالفعل
                 const existingIds = new Set(recitersList.map(r => r.id));
                 filtered = filtered.filter(r => !existingIds.has(r.id));
                 
@@ -3116,7 +3458,6 @@
                 });
                 list.innerHTML = html;
                 
-                // إضافة حدث النقر على زر الإضافة
                 list.querySelectorAll('.available-reciter .admin-btn').forEach(btn => {
                     btn.onclick = function(e) {
                         e.stopPropagation();
@@ -3127,7 +3468,6 @@
                     };
                 });
                 
-                // إضافة حدث النقر على العنصر كله
                 list.querySelectorAll('.available-reciter').forEach(el => {
                     el.onclick = function() {
                         const id = parseInt(this.dataset.id);
@@ -3138,13 +3478,11 @@
             }
 
             async function addReciterToMainList(id, name) {
-                // التحقق من عدم وجود المقرئ مسبقاً
                 if (recitersList.some(r => r.id === id)) {
                     showToast('⚠️ هذا المقرئ موجود بالفعل في القائمة');
                     return;
                 }
                 
-                // إضافة المقرئ الجديد
                 const newReciter = {
                     id: id,
                     name: name,
@@ -3152,11 +3490,8 @@
                 };
                 
                 recitersList.push(newReciter);
-                
-                // حفظ محلياً
                 localStorage.setItem(RECITERS_CACHE_KEY, JSON.stringify({ time: Date.now(), list: recitersList }));
                 
-                // تحديث القوائم
                 renderRecitersList();
                 if (app) {
                     app.populateReciters();
@@ -3166,30 +3501,25 @@
                     app.loadSurah(false);
                 }
                 
-                // تحديث نافذة الإضافة
                 renderAvailableReciters(document.getElementById('reciterSearchInput').value);
                 
                 showToast(`✅ تم إضافة المقرئ ${name} محلياً`);
                 document.getElementById('adminStatus').innerHTML = `✅ تم إضافة المقرئ ${name} محلياً، اضغط "رفع إلى GitHub" لحفظه للجميع`;
                 document.getElementById('adminStatus').style.color = '#00ff88';
                 
-                // عرض خيار رفع التغييرات فوراً
                 if (confirm(`✅ تم إضافة "${name}" محلياً. هل تريد رفع التغييرات إلى GitHub الآن ليظهر للجميع؟`)) {
                     document.getElementById('generateJsonBtn').click();
                 }
             }
 
-            // البحث في نافذة الإضافة
             document.getElementById('reciterSearchInput').addEventListener('input', function() {
                 renderAvailableReciters(this.value);
             });
 
-            // إغلاق نافذة الإضافة
             document.getElementById('closeAddReciterBtn').onclick = function() {
                 document.getElementById('addReciterModal').classList.remove('active');
             };
             
-            // إغلاق النافذة بالضغط خارجها
             document.getElementById('addReciterModal').onclick = function(e) {
                 if (e.target === this) {
                     this.classList.remove('active');
@@ -3233,7 +3563,6 @@
                         const data = await getResp.json();
                         sha = data.sha;
                     } else if (getResp.status === 404) {
-                        // الملف غير موجود، سننشئه
                         statusDiv.innerHTML = '📄 الملف غير موجود، سيتم إنشاؤه...';
                     } else {
                         throw new Error(`فشل جلب الملف: ${getResp.status}`);
