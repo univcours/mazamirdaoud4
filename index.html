@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -989,7 +990,6 @@
             //  الملف يجب أن يكون على صيغة JSON: { "id": "url", ... }
             // =======================================================
             const GITHUB_IMAGES_URL = 'https://raw.githubusercontent.com/univcours/mazamirdaoud4/refs/heads/main/reciters.json';
-            // مثال: 'https://raw.githubusercontent.com/ahmed/quran-radio/main/reciters.json'
 
             // ===== دوال مساعدة =====
             function fitToScreen() {
@@ -1050,7 +1050,39 @@
                 return `https://ui-avatars.com/api/?name=${encoded}&background=${bg}&color=${color}&size=128&font-size=0.5&bold=true&rounded=true`;
             }
 
-            // ===== تحميل قائمة المقرئين مع دمج الصور من GitHub =====
+            // ===== تحويل صورة WebP إلى PNG/JPG باستخدام Canvas =====
+            function convertImageToPNG(imageUrl) {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.crossOrigin = 'Anonymous';
+                    
+                    img.onload = function() {
+                        try {
+                            const canvas = document.createElement('canvas');
+                            canvas.width = img.width;
+                            canvas.height = img.height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0);
+                            
+                            // محاولة التصدير بصيغة PNG أولاً
+                            let dataUrl = canvas.toDataURL('image/png');
+                            resolve(dataUrl);
+                        } catch (e) {
+                            console.warn('فشل تحويل الصورة، سيتم استخدام الرابط الأصلي:', e);
+                            resolve(imageUrl);
+                        }
+                    };
+                    
+                    img.onerror = function() {
+                        console.warn('فشل تحميل الصورة للتحويل، سيتم استخدام الرابط الأصلي');
+                        resolve(imageUrl);
+                    };
+                    
+                    img.src = imageUrl;
+                });
+            }
+
+            // ===== تحميل قائمة المقرئين مع دمج الصور من GitHub وتحويل WebP =====
             const RECITERS_API_URL = 'https://api.quran.com/api/v4/resources/recitations?language=ar';
             const PROFILE_PICS_API_URL = 'https://api.quran.com/api/v4/resources/reciters?language=ar';
             const RECITERS_CACHE_KEY = 'recitersListCache_v5';
@@ -1661,7 +1693,7 @@
                     this.playlistSelect.value = this.currentSurah;
                     
                     const r = getReciterById(this.currentReciter);
-                    updateReciterSurahBar(r ? r.name : '--', SURAH_NAMES[this.currentSurah], r ? r.image : null);
+                    await updateReciterSurahBar(r ? r.name : '--', SURAH_NAMES[this.currentSurah], r ? r.image : null);
                     
                     const initKey = `offset_${this.currentReciter}_${this.currentSurah}`;
                     const initOffset = parseFloat(localStorage.getItem(initKey)) || 0;
@@ -1698,7 +1730,7 @@
                         if (!this.recitersReady) return;
                         this.currentReciter = parseInt(this.reciterSelect.value);
                         const r = getReciterById(this.currentReciter);
-                        if (r) updateReciterSurahBar(r.name, SURAH_NAMES[this.currentSurah], r.image);
+                        if (r) await updateReciterSurahBar(r.name, SURAH_NAMES[this.currentSurah], r.image);
                         await this.loadSurah(true);
                         this.saveToStorage();
                     };
@@ -1707,7 +1739,7 @@
                         if (!this.recitersReady) return;
                         this.currentSurah = parseInt(this.playlistSelect.value);
                         const r = getReciterById(this.currentReciter);
-                        if (r) updateReciterSurahBar(r.name, SURAH_NAMES[this.currentSurah], r.image);
+                        if (r) await updateReciterSurahBar(r.name, SURAH_NAMES[this.currentSurah], r.image);
                         await this.loadSurah(true);
                         this.saveToStorage();
                     };
@@ -1834,7 +1866,7 @@
                     }
                     const reciterName = reciterObj.name;
                     
-                    updateReciterSurahBar(reciterName, SURAH_NAMES[this.currentSurah], reciterObj.image);
+                    await updateReciterSurahBar(reciterName, SURAH_NAMES[this.currentSurah], reciterObj.image);
                     this.playlistSelect.value = this.currentSurah;
                     
                     showLoading(`جاري تحميل سورة ${SURAH_NAMES[this.currentSurah]}...`);
@@ -1961,8 +1993,8 @@
                 }
             }
 
-            // ===== تحديث شريط المقرئ =====
-            function updateReciterSurahBar(reciterName, surahName, imageUrl) {
+            // ===== تحديث شريط المقرئ مع تحويل الصور =====
+            async function updateReciterSurahBar(reciterName, surahName, imageUrl) {
                 document.getElementById('currentReciterName').innerText = reciterName;
                 document.getElementById('currentSurahName').innerText = surahName;
                 
@@ -1970,9 +2002,23 @@
                 const avatarText = document.getElementById('avatarText');
                 
                 if (imageUrl) {
+                    // التحقق من صيغة الصورة وتحويلها إذا كانت WebP
+                    let finalImageUrl = imageUrl;
+                    if (imageUrl.toLowerCase().includes('.webp') || imageUrl.toLowerCase().includes('webp')) {
+                        try {
+                            // محاولة تحويل الصورة إلى PNG باستخدام Canvas
+                            const convertedDataUrl = await convertImageToPNG(imageUrl);
+                            finalImageUrl = convertedDataUrl;
+                            console.log('✅ تم تحويل صورة WebP إلى PNG');
+                        } catch (e) {
+                            console.warn('⚠️ فشل تحويل الصورة، استخدام الرابط الأصلي:', e);
+                            finalImageUrl = imageUrl;
+                        }
+                    }
+                    
                     imgEl.style.display = 'block';
                     avatarText.style.display = 'none';
-                    imgEl.src = imageUrl;
+                    imgEl.src = finalImageUrl;
                     imgEl.onerror = function() {
                         this.style.display = 'none';
                         avatarText.style.display = 'block';
@@ -1985,6 +2031,7 @@
                             initials = cleanName.substring(0, 2);
                         }
                         avatarText.textContent = initials.toUpperCase();
+                        showToast('⚠️ تعذر تحميل الصورة، تم استخدام الرمز بدلاً منها');
                     };
                 } else {
                     imgEl.style.display = 'none';
@@ -2145,7 +2192,7 @@
                     }
                     // تحديث الصورة الحالية
                     const r = getReciterById(app.currentReciter);
-                    if (r) updateReciterSurahBar(r.name, SURAH_NAMES[app.currentSurah], r.image);
+                    if (r) await updateReciterSurahBar(r.name, SURAH_NAMES[app.currentSurah], r.image);
                 }
                 hideLoading();
                 showToast('✅ تم تحديث الصور من GitHub');
@@ -2262,7 +2309,7 @@
             };
             
             document.getElementById('drawerAbout').onclick = () => {
-                alert("🎵 راديو مزامير داود 🎵\n\n✨ الميزات:\n✓ قائمة المقرئين من API الرسمي\n✓ صور المقرئين من GitHub (قابلة للتخصيص)\n✓ توقيتات آيات رسمية\n✓ ساعة حائطية مضيئة\n✓ أوقات الصلاة\n✓ أزرار التزامن والإزاحة\n✓ مؤقت نوم\n✓ تعزيز الصوت\n✓ صور رمزية للحروف عند عدم توفر الصور\n✓ أزرار تحكم احترافية");
+                alert("🎵 راديو مزامير داود 🎵\n\n✨ الميزات:\n✓ قائمة المقرئين من API الرسمي\n✓ صور المقرئين من GitHub (قابلة للتخصيص)\n✓ توقيتات آيات رسمية\n✓ ساعة حائطية مضيئة\n✓ أوقات الصلاة\n✓ أزرار التزامن والإزاحة\n✓ مؤقت نوم\n✓ تعزيز الصوت\n✓ صور رمزية للحروف عند عدم توفر الصور\n✓ أزرار تحكم احترافية\n✓ تحويل تلقائي لصور WebP إلى PNG");
             };
 
             // ===== ألوان الثيم =====
