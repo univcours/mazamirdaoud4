@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -846,6 +845,21 @@
             background: #00ff88;
             color: #000;
         }
+        #adminPanel .reciters-list .reciter-item .delete-btn {
+            background: rgba(255, 51, 102, 0.2);
+            border: 1px solid #ff3366;
+            border-radius: 4px;
+            color: #ff3366;
+            padding: 2px 8px;
+            font-size: 0.6rem;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-left: 4px;
+        }
+        #adminPanel .reciters-list .reciter-item .delete-btn:hover {
+            background: #ff3366;
+            color: #fff;
+        }
         #adminPanel .link-input-area {
             margin: 12px 0;
             display: none;
@@ -888,6 +902,7 @@
         #adminPanel .admin-btn:hover { opacity: 0.8; transform: scale(1.02); }
         #adminPanel .admin-btn.danger { background: #ff3366; color: #fff; }
         #adminPanel .admin-btn.warning { background: #ffcc00; color: #000; }
+        #adminPanel .admin-btn.info { background: #0066ff; color: #fff; }
         #adminPanel .admin-status {
             color: #ffcc00;
             margin-top: 10px;
@@ -916,6 +931,94 @@
             width: 100%;
         }
         #adminPanel .clear-cache-btn:hover { opacity: 0.8; transform: scale(1.02); }
+        
+        /* ===== نافذة إضافة مقرئ ===== */
+        #addReciterModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+        #addReciterModal.active { display: flex; }
+        #addReciterModal .modal-content {
+            background: linear-gradient(145deg, #0a1f15, #051a0a);
+            border: 2px solid #00ff88;
+            border-radius: 30px;
+            padding: 25px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        #addReciterModal .modal-content h3 {
+            color: #00ff88;
+            text-align: center;
+            margin-bottom: 15px;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.9rem;
+        }
+        #addReciterModal .modal-content .available-reciter {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            margin: 4px 0;
+            background: rgba(0, 255, 136, 0.05);
+            border-radius: 8px;
+            border-right: 3px solid #00ff88;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #88ffbb;
+            font-size: 0.75rem;
+        }
+        #addReciterModal .modal-content .available-reciter:hover {
+            background: rgba(0, 255, 136, 0.15);
+        }
+        #addReciterModal .modal-content .available-reciter .rid {
+            color: #ffcc00;
+            font-weight: bold;
+            font-size: 0.65rem;
+            background: rgba(0,0,0,0.3);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+        #addReciterModal .modal-content .close-modal-btn {
+            background: #ff3366;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.7rem;
+            transition: 0.2s;
+            margin-top: 15px;
+            width: 100%;
+        }
+        #addReciterModal .modal-content .close-modal-btn:hover { opacity: 0.8; }
+        #addReciterModal .modal-content .search-box {
+            width: 100%;
+            padding: 8px 12px;
+            margin-bottom: 12px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #00ff88;
+            border-radius: 25px;
+            color: #00ff88;
+            font-size: 0.75rem;
+            font-family: 'Cairo', sans-serif;
+        }
+        #addReciterModal .modal-content .available-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
         
         @media (max-width: 600px) {
             .wall-clock { width: 70px; height: 70px; }
@@ -1053,9 +1156,21 @@
         </div>
     </div>
 
+    <!-- ===== نافذة إضافة مقرئ ===== -->
+    <div id="addReciterModal">
+        <div class="modal-content">
+            <h3><i class="fas fa-user-plus"></i> إضافة مقرئ جديد</h3>
+            <input type="text" class="search-box" id="reciterSearchInput" placeholder="🔍 بحث عن مقرئ...">
+            <div class="available-list" id="availableRecitersList">
+                <div style="color:#888; text-align:center; padding:10px;">جاري تحميل قائمة المقرئين المتاحين...</div>
+            </div>
+            <button class="close-modal-btn" id="closeAddReciterBtn">✖ إغلاق</button>
+        </div>
+    </div>
+
     <!-- ===== لوحة الإدارة المخفية ===== -->
     <div id="adminPanel">
-        <h3>🛠️ إدارة صور المقرئين</h3>
+        <h3>🛠️ إدارة المقرئين</h3>
         <div class="reciters-list" id="recitersListDisplay">
             <div style="color:#888; text-align:center;">جاري التحميل...</div>
         </div>
@@ -1070,6 +1185,7 @@
         </div>
         
         <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 10px;">
+            <button class="admin-btn info" id="addReciterBtn"><i class="fas fa-plus"></i> إضافة مقرئ</button>
             <button class="admin-btn warning" id="generateJsonBtn">📤 إنشاء JSON ورفع</button>
             <button class="admin-btn danger" id="closeAdminBtn">✖ إغلاق</button>
         </div>
@@ -1078,7 +1194,7 @@
         
         <div class="admin-status" id="adminStatus"></div>
         <div class="admin-note">
-            <i class="fas fa-info-circle"></i> اضغط على اسم المقرئ لتعديل صورته • اضغط 5 مرات على الشعار أو اللوغو لإظهار اللوحة
+            <i class="fas fa-info-circle"></i> اضغط على اسم المقرئ لتعديل صورته • زر 🗑️ لحذف المقرئ • اضغط 5 مرات على الشعار أو اللوغو لإظهار اللوحة
         </div>
     </div>
 
@@ -1101,6 +1217,8 @@
                 </div>
                 <div class="title-area">
                     <img id="logoImg" class="logo-img" src="" alt="شعار التطبيق" style="display:none;">
+                    <h1 id="appTitle"></h1>
+
 
                 </div>
                 <div class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></div>
@@ -1313,6 +1431,103 @@
             const RECITERS_CACHE_TTL = 7 * 24 * 60 * 60 * 1000;
 
             let recitersList = [];
+            let allAvailableReciters = [];
+
+            // ===== دالة إنشاء ملف reciters.json في المستودع =====
+            async function createRecitersFileOnGitHub(token) {
+                try {
+                    const repo = 'univcours/mazamirdaoud4';
+                    const path = 'reciters.json';
+                    const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
+                    
+                    // التحقق من وجود الملف
+                    const checkResp = await fetch(apiUrl, {
+                        headers: {
+                            'Authorization': `token ${token}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    });
+                    
+                    // إذا كان الملف موجوداً، نعيده
+                    if (checkResp.ok) {
+                        const data = await checkResp.json();
+                        return data;
+                    }
+                    
+                    // إذا لم يكن موجوداً، ننشئه
+                    if (checkResp.status === 404) {
+                        // بناء القائمة الأساسية من API
+                        const baseReciters = [];
+                        try {
+                            const resp = await fetch(RECITERS_API_URL);
+                            const data = await resp.json();
+                            if (data.recitations) {
+                                data.recitations.forEach(r => {
+                                    let name = (r.translated_name && r.translated_name.name) ? r.translated_name.name : r.reciter_name;
+                                    let style = r.style ? ` (${r.style})` : '';
+                                    baseReciters.push({
+                                        id: r.id,
+                                        name: name + style,
+                                        image: getAvatarUrl(name + style)
+                                    });
+                                });
+                            }
+                        } catch(e) {
+                            console.warn('فشل جلب القائمة من API:', e);
+                            // قائمة احتياطية
+                            const FALLBACK = [
+                                { id: 1, name: 'عبد الباسط عبد الصمد (مجوّد)' },
+                                { id: 2, name: 'عبد الباسط عبد الصمد (مرتل)' },
+                                { id: 3, name: 'عبد الرحمن السديس' },
+                                { id: 4, name: 'أبو بكر الشاطري' },
+                                { id: 7, name: 'مشاري راشد العفاسي' },
+                                { id: 10, name: 'سعود الشريم' }
+                            ];
+                            baseReciters.push(...FALLBACK.map(r => ({
+                                ...r,
+                                image: getAvatarUrl(r.name)
+                            })));
+                        }
+                        
+                        // بناء كائن JSON
+                        const jsonData = {};
+                        baseReciters.forEach(r => {
+                            jsonData[r.id] = r.image || '';
+                        });
+                        const jsonString = JSON.stringify(jsonData, null, 2);
+                        const content = btoa(unescape(encodeURIComponent(jsonString)));
+                        
+                        // رفع الملف
+                        const uploadResp = await fetch(apiUrl, {
+                            method: 'PUT',
+                            headers: {
+                                'Authorization': `token ${token}`,
+                                'Accept': 'application/vnd.github.v3+json',
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                message: 'إنشاء ملف reciters.json تلقائياً',
+                                content: content,
+                                branch: 'main'
+                            })
+                        });
+                        
+                        if (!uploadResp.ok) {
+                            throw new Error(`فشل إنشاء الملف: ${uploadResp.status}`);
+                        }
+                        
+                        const result = await uploadResp.json();
+                        showToast('✅ تم إنشاء ملف reciters.json في المستودع');
+                        return result;
+                    }
+                    
+                    throw new Error(`خطأ غير متوقع: ${checkResp.status}`);
+                } catch (error) {
+                    console.error('فشل إنشاء الملف:', error);
+                    showToast(`⚠️ فشل إنشاء الملف: ${error.message}`);
+                    return null;
+                }
+            }
 
             async function loadRecitersList(forceRefresh = false) {
                 if (!forceRefresh) {
@@ -1362,17 +1577,35 @@
                 }
 
                 let imagesMapGitHub = {};
+                let fileExists = false;
                 try {
                     const imgResp = await fetch(GITHUB_IMAGES_URL);
                     if (imgResp.ok) {
                         imagesMapGitHub = await imgResp.json();
+                        fileExists = true;
                         console.log('✅ تم تحميل صور GitHub:', Object.keys(imagesMapGitHub).length);
+                    } else if (imgResp.status === 404) {
+                        console.warn('⚠️ ملف reciters.json غير موجود، سيتم إنشاؤه عند أول استخدام');
+                        // محاولة إنشاء الملف إذا كان المستخدم مسجلاً
+                        const token = prompt('🔑 الملف غير موجود، أدخل GitHub Token لإنشائه تلقائياً:');
+                        if (token) {
+                            await createRecitersFileOnGitHub(token);
+                            // إعادة المحاولة
+                            const retryResp = await fetch(GITHUB_IMAGES_URL);
+                            if (retryResp.ok) {
+                                imagesMapGitHub = await retryResp.json();
+                                fileExists = true;
+                                showToast('✅ تم إنشاء الملف وتحميل الصور');
+                            }
+                        }
                     } else {
                         console.warn('⚠️ فشل تحميل صور GitHub (استجابة غير صحيحة)');
                     }
                 } catch(e) {
                     console.warn('⚠️ فشل تحميل صور GitHub:', e);
                 }
+
+                allAvailableReciters = recitersFromApi.length > 0 ? recitersFromApi : [];
 
                 if (recitersFromApi.length > 0) {
                     recitersList = recitersFromApi.map(r => {
@@ -1405,6 +1638,7 @@
                         { id: 7, name: 'مشاري راشد العفاسي' },
                         { id: 10, name: 'سعود الشريم' }
                     ];
+                    allAvailableReciters = FALLBACK;
                     recitersList = FALLBACK.map(r => {
                         let imgUrl = imagesMapGitHub[r.id] || getAvatarUrl(r.name);
                         return { ...r, image: imgUrl };
@@ -2542,7 +2776,7 @@
             };
             
             document.getElementById('drawerAbout').onclick = () => {
-                alert("🎵 راديو مزامير داود 🎵\n\n✨ الميزات:\n✓ قائمة المقرئين من API الرسمي\n✓ صور المقرئين من GitHub (قابلة للتخصيص)\n✓ توقيتات آيات رسمية\n✓ ساعة حائطية مضيئة\n✓ أوقات الصلاة\n✓ أزرار التزامن والإزاحة\n✓ مؤقت نوم\n✓ تعزيز الصوت\n✓ صور رمزية للحروف عند عدم توفر الصور\n✓ أزرار تحكم احترافية\n✓ تحويل تلقائي لصور WebP إلى PNG\n✓ لوحة إدارة مخفية لتعديل صور كل مقرئ على حدة\n✓ شعار التطبيق من logos.jpg");
+                alert("🎵 راديو مزامير داود 🎵\n\n✨ الميزات:\n✓ قائمة المقرئين من API الرسمي\n✓ صور المقرئين من GitHub (قابلة للتخصيص)\n✓ توقيتات آيات رسمية\n✓ ساعة حائطية مضيئة\n✓ أوقات الصلاة\n✓ أزرار التزامن والإزاحة\n✓ مؤقت نوم\n✓ تعزيز الصوت\n✓ صور رمزية للحروف عند عدم توفر الصور\n✓ أزرار تحكم احترافية\n✓ تحويل تلقائي لصور WebP إلى PNG\n✓ لوحة إدارة مخفية لتعديل صور كل مقرئ على حدة\n✓ إضافة وحذف المقرئين يدوياً\n✓ إنشاء تلقائي لملف reciters.json في المستودع\n✓ الحذف نهائياً لجميع المستخدمين");
             };
 
             // ===== ألوان الثيم =====
@@ -2616,6 +2850,7 @@
                                 <span class="id-badge">ID: ${r.id}</span>
                                 <span class="name">${r.name}</span>
                                 <span class="link-preview" title="${r.image || ''}">${linkPreview}</span>
+                                <button class="delete-btn" data-index="${index}" title="حذف المقرئ نهائياً">🗑️</button>
                                 <button class="edit-btn" data-index="${index}">✏️</button>
                             </div>
                         `;
@@ -2623,6 +2858,7 @@
                 }
                 displayDiv.innerHTML = html;
                 
+                // أزرار التعديل
                 document.querySelectorAll('.reciter-item .edit-btn').forEach(btn => {
                     btn.onclick = function(e) {
                         e.stopPropagation();
@@ -2631,6 +2867,16 @@
                     };
                 });
                 
+                // أزرار الحذف
+                document.querySelectorAll('.reciter-item .delete-btn').forEach(btn => {
+                    btn.onclick = function(e) {
+                        e.stopPropagation();
+                        const index = parseInt(this.dataset.index);
+                        deleteReciterPermanently(index);
+                    };
+                });
+                
+                // النقر على اسم المقرئ
                 document.querySelectorAll('.reciter-item .name').forEach(el => {
                     el.parentElement.onclick = function() {
                         const index = parseInt(this.dataset.index);
@@ -2649,6 +2895,119 @@
                 document.getElementById('linkInputArea').classList.add('active');
                 document.getElementById('linkInput').focus();
                 document.getElementById('adminStatus').innerHTML = '';
+            }
+
+            // ===== حذف المقرئ نهائياً (لكل المستخدمين) =====
+            async function deleteReciterPermanently(index) {
+                if (index < 0 || index >= recitersList.length) return;
+                const r = recitersList[index];
+                
+                if (!confirm(`🗑️ هل أنت متأكد من حذف المقرئ "${r.name}" (ID: ${r.id}) نهائياً من المستودع؟\nهذا الإجراء سيمنع ظهوره لجميع المستخدمين.`)) return;
+                
+                const statusDiv = document.getElementById('adminStatus');
+                statusDiv.innerHTML = '⏳ جاري حذف المقرئ نهائياً...';
+                statusDiv.style.color = '#ffcc00';
+                
+                try {
+                    // 1. حذف من القائمة المحلية
+                    recitersList.splice(index, 1);
+                    
+                    // 2. بناء JSON الجديد
+                    const jsonData = {};
+                    recitersList.forEach(r => {
+                        jsonData[r.id] = r.image || '';
+                    });
+                    const jsonString = JSON.stringify(jsonData, null, 2);
+                    
+                    // 3. طلب GitHub Token
+                    const token = prompt('🔑 أدخل GitHub Token الخاص بك (صلاحية repo) لحذف المقرئ نهائياً:');
+                    if (!token) {
+                        statusDiv.innerHTML = '❌ تم الإلغاء';
+                        statusDiv.style.color = '#ff3366';
+                        // إعادة المقرئ إلى القائمة
+                        recitersList.splice(index, 0, r);
+                        renderRecitersList();
+                        return;
+                    }
+                    
+                    // 4. رفع الملف إلى GitHub
+                    const repo = 'univcours/mazamirdaoud4';
+                    const path = 'reciters.json';
+                    const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
+                    
+                    // الحصول على SHA
+                    const getResp = await fetch(apiUrl, {
+                        headers: {
+                            'Authorization': `token ${token}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    });
+                    
+                    let sha = null;
+                    if (getResp.ok) {
+                        const data = await getResp.json();
+                        sha = data.sha;
+                    } else if (getResp.status !== 404) {
+                        throw new Error(`فشل جلب الملف: ${getResp.status}`);
+                    }
+                    
+                    // رفع الملف
+                    const content = btoa(unescape(encodeURIComponent(jsonString)));
+                    const uploadData = {
+                        message: `حذف المقرئ ${r.name} نهائياً من القائمة`,
+                        content: content,
+                        branch: 'main'
+                    };
+                    if (sha) uploadData.sha = sha;
+                    
+                    const uploadResp = await fetch(apiUrl, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `token ${token}`,
+                            'Accept': 'application/vnd.github.v3+json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(uploadData)
+                    });
+                    
+                    if (!uploadResp.ok) {
+                        const errorData = await uploadResp.json();
+                        throw new Error(`فشل الرفع: ${uploadResp.status} - ${errorData.message || 'خطأ غير معروف'}`);
+                    }
+                    
+                    // 5. تحديث الكاش المحلي
+                    localStorage.setItem(RECITERS_CACHE_KEY, JSON.stringify({ time: Date.now(), list: recitersList }));
+                    
+                    // 6. تحديث الواجهة
+                    renderRecitersList();
+                    if (app) {
+                        app.populateReciters();
+                        if (recitersList.length > 0) {
+                            app.currentReciter = recitersList[0].id;
+                            app.reciterSelect.value = app.currentReciter;
+                            const r2 = getReciterById(app.currentReciter);
+                            if (r2) updateReciterSurahBar(r2.name, SURAH_NAMES[app.currentSurah], r2.image);
+                            app.loadSurah(false);
+                        } else {
+                            showToast('⚠️ لا يوجد مقرئون، أضف مقرئاً جديداً');
+                        }
+                    }
+                    
+                    statusDiv.innerHTML = `✅ تم حذف المقرئ "${r.name}" نهائياً من المستودع!`;
+                    statusDiv.style.color = '#00ff88';
+                    showToast(`🗑️ تم حذف ${r.name} نهائياً لجميع المستخدمين`);
+                    
+                } catch (error) {
+                    console.error(error);
+                    statusDiv.innerHTML = `❌ خطأ: ${error.message}`;
+                    statusDiv.style.color = '#ff3366';
+                    showToast(`❌ فشل الحذف: ${error.message}`);
+                    // إعادة المقرئ إلى القائمة
+                    if (!recitersList.includes(r)) {
+                        recitersList.splice(index, 0, r);
+                        renderRecitersList();
+                    }
+                }
             }
 
             document.getElementById('saveLinkBtn').onclick = function() {
@@ -2711,6 +3070,132 @@
                 }
             };
 
+            // ===== نافذة إضافة مقرئ =====
+            document.getElementById('addReciterBtn').onclick = function() {
+                openAddReciterModal();
+            };
+
+            function openAddReciterModal() {
+                const modal = document.getElementById('addReciterModal');
+                modal.classList.add('active');
+                renderAvailableReciters('');
+                document.getElementById('reciterSearchInput').value = '';
+                document.getElementById('reciterSearchInput').focus();
+            }
+
+            function renderAvailableReciters(searchTerm = '') {
+                const list = document.getElementById('availableRecitersList');
+                let filtered = allAvailableReciters;
+                
+                if (searchTerm.trim()) {
+                    const term = searchTerm.trim().toLowerCase();
+                    filtered = allAvailableReciters.filter(r => 
+                        r.name.toLowerCase().includes(term) || 
+                        String(r.id).includes(term)
+                    );
+                }
+                
+                // استبعاد المقرئين الموجودين بالفعل
+                const existingIds = new Set(recitersList.map(r => r.id));
+                filtered = filtered.filter(r => !existingIds.has(r.id));
+                
+                if (filtered.length === 0) {
+                    list.innerHTML = '<div style="color:#888; text-align:center; padding:10px;">لا يوجد مقرئون متاحون للإضافة</div>';
+                    return;
+                }
+                
+                let html = '';
+                filtered.forEach(r => {
+                    html += `
+                        <div class="available-reciter" data-id="${r.id}" data-name="${r.name}">
+                            <span class="rid">ID: ${r.id}</span>
+                            <span>${r.name}</span>
+                            <button class="admin-btn" style="padding:2px 10px; font-size:0.6rem;">➕ إضافة</button>
+                        </div>
+                    `;
+                });
+                list.innerHTML = html;
+                
+                // إضافة حدث النقر على زر الإضافة
+                list.querySelectorAll('.available-reciter .admin-btn').forEach(btn => {
+                    btn.onclick = function(e) {
+                        e.stopPropagation();
+                        const parent = this.closest('.available-reciter');
+                        const id = parseInt(parent.dataset.id);
+                        const name = parent.dataset.name;
+                        addReciterToMainList(id, name);
+                    };
+                });
+                
+                // إضافة حدث النقر على العنصر كله
+                list.querySelectorAll('.available-reciter').forEach(el => {
+                    el.onclick = function() {
+                        const id = parseInt(this.dataset.id);
+                        const name = this.dataset.name;
+                        addReciterToMainList(id, name);
+                    };
+                });
+            }
+
+            async function addReciterToMainList(id, name) {
+                // التحقق من عدم وجود المقرئ مسبقاً
+                if (recitersList.some(r => r.id === id)) {
+                    showToast('⚠️ هذا المقرئ موجود بالفعل في القائمة');
+                    return;
+                }
+                
+                // إضافة المقرئ الجديد
+                const newReciter = {
+                    id: id,
+                    name: name,
+                    image: getAvatarUrl(name)
+                };
+                
+                recitersList.push(newReciter);
+                
+                // حفظ محلياً
+                localStorage.setItem(RECITERS_CACHE_KEY, JSON.stringify({ time: Date.now(), list: recitersList }));
+                
+                // تحديث القوائم
+                renderRecitersList();
+                if (app) {
+                    app.populateReciters();
+                    app.currentReciter = id;
+                    app.reciterSelect.value = id;
+                    updateReciterSurahBar(name, SURAH_NAMES[app.currentSurah], newReciter.image);
+                    app.loadSurah(false);
+                }
+                
+                // تحديث نافذة الإضافة
+                renderAvailableReciters(document.getElementById('reciterSearchInput').value);
+                
+                showToast(`✅ تم إضافة المقرئ ${name} محلياً`);
+                document.getElementById('adminStatus').innerHTML = `✅ تم إضافة المقرئ ${name} محلياً، اضغط "رفع إلى GitHub" لحفظه للجميع`;
+                document.getElementById('adminStatus').style.color = '#00ff88';
+                
+                // عرض خيار رفع التغييرات فوراً
+                if (confirm(`✅ تم إضافة "${name}" محلياً. هل تريد رفع التغييرات إلى GitHub الآن ليظهر للجميع؟`)) {
+                    document.getElementById('generateJsonBtn').click();
+                }
+            }
+
+            // البحث في نافذة الإضافة
+            document.getElementById('reciterSearchInput').addEventListener('input', function() {
+                renderAvailableReciters(this.value);
+            });
+
+            // إغلاق نافذة الإضافة
+            document.getElementById('closeAddReciterBtn').onclick = function() {
+                document.getElementById('addReciterModal').classList.remove('active');
+            };
+            
+            // إغلاق النافذة بالضغط خارجها
+            document.getElementById('addReciterModal').onclick = function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            };
+
             document.getElementById('generateJsonBtn').onclick = async function() {
                 const statusDiv = document.getElementById('adminStatus');
                 statusDiv.innerHTML = '⏳ جاري المعالجة...';
@@ -2747,7 +3232,10 @@
                     if (getResp.ok) {
                         const data = await getResp.json();
                         sha = data.sha;
-                    } else if (getResp.status !== 404) {
+                    } else if (getResp.status === 404) {
+                        // الملف غير موجود، سننشئه
+                        statusDiv.innerHTML = '📄 الملف غير موجود، سيتم إنشاؤه...';
+                    } else {
                         throw new Error(`فشل جلب الملف: ${getResp.status}`);
                     }
                     
@@ -2755,7 +3243,7 @@
                     const content = btoa(unescape(encodeURIComponent(jsonString)));
                     
                     const uploadData = {
-                        message: 'تحديث صور المقرئين من لوحة الإدارة',
+                        message: 'تحديث قائمة المقرئين من لوحة الإدارة',
                         content: content,
                         branch: 'main'
                     };
@@ -2778,7 +3266,7 @@
                     
                     statusDiv.innerHTML = '✅ تم تحديث الملف بنجاح على GitHub!';
                     statusDiv.style.color = '#00ff88';
-                    showToast('✅ تم تحديث صور المقرئين بنجاح');
+                    showToast('✅ تم تحديث قائمة المقرئين بنجاح للجميع');
                     
                     localStorage.removeItem(RECITERS_CACHE_KEY);
                     await loadRecitersList(true);
@@ -2788,7 +3276,7 @@
                         app.populateReciters();
                         if (getReciterById(savedReciter)) {
                             app.reciterSelect.value = savedReciter;
-                        } else {
+                        } else if (recitersList.length > 0) {
                             app.currentReciter = recitersList[0].id;
                             app.reciterSelect.value = app.currentReciter;
                         }
