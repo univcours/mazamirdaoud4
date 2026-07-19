@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -169,6 +168,20 @@
             flex: 1;
             text-align: center;
             min-width: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .title-area .logo-img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #00ff88;
+            box-shadow: 0 0 12px rgba(0, 255, 136, 0.3);
+            flex-shrink: 0;
+            cursor: pointer;
         }
         .title-area h1 {
             font-size: 1.1rem;
@@ -180,6 +193,8 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            cursor: pointer;
+            user-select: none;
         }
         
         .menu-btn {
@@ -743,12 +758,171 @@
             font-family: 'Cairo', sans-serif;
             font-size: 1rem;
         }
+        
+        /* ===== لوحة الإدارة المخفية ===== */
+        #adminPanel {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 9999;
+            background: rgba(0, 0, 0, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #00ff88;
+            max-width: 450px;
+            max-height: 85vh;
+            overflow-y: auto;
+            direction: ltr;
+            box-shadow: 0 0 40px rgba(0, 255, 136, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        #adminPanel h3 {
+            color: #00ff88;
+            margin-bottom: 10px;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        #adminPanel .reciters-list {
+            color: #fff;
+            margin-bottom: 15px;
+            font-size: 0.75rem;
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 8px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        #adminPanel .reciters-list .reciter-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 8px;
+            margin: 3px 0;
+            background: rgba(0, 255, 136, 0.05);
+            border-radius: 6px;
+            border-right: 3px solid #00ff88;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        #adminPanel .reciters-list .reciter-item:hover {
+            background: rgba(0, 255, 136, 0.15);
+        }
+        #adminPanel .reciters-list .reciter-item .id-badge {
+            color: #ffcc00;
+            font-weight: bold;
+            font-size: 0.65rem;
+            background: rgba(0,0,0,0.3);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+        #adminPanel .reciters-list .reciter-item .name {
+            flex: 1;
+            margin: 0 8px;
+            color: #88ffbb;
+        }
+        #adminPanel .reciters-list .reciter-item .link-preview {
+            color: #888;
+            font-size: 0.55rem;
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        #adminPanel .reciters-list .reciter-item .edit-btn {
+            background: rgba(0, 255, 136, 0.2);
+            border: 1px solid #00ff88;
+            border-radius: 4px;
+            color: #00ff88;
+            padding: 2px 8px;
+            font-size: 0.6rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        #adminPanel .reciters-list .reciter-item .edit-btn:hover {
+            background: #00ff88;
+            color: #000;
+        }
+        #adminPanel .link-input-area {
+            margin: 12px 0;
+            display: none;
+        }
+        #adminPanel .link-input-area.active {
+            display: block;
+        }
+        #adminPanel .link-input-area label {
+            color: #ffcc00;
+            font-size: 0.7rem;
+            display: block;
+            margin-bottom: 4px;
+        }
+        #adminPanel .link-input-area input {
+            width: 100%;
+            padding: 6px 10px;
+            background: #1a1a2e;
+            color: #00ff88;
+            border: 1px solid #00ff88;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            direction: ltr;
+        }
+        #adminPanel .link-input-area .btn-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 6px;
+        }
+        #adminPanel .admin-btn {
+            background: #00ff88;
+            color: #000;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.7rem;
+            transition: 0.2s;
+        }
+        #adminPanel .admin-btn:hover { opacity: 0.8; transform: scale(1.02); }
+        #adminPanel .admin-btn.danger { background: #ff3366; color: #fff; }
+        #adminPanel .admin-btn.warning { background: #ffcc00; color: #000; }
+        #adminPanel .admin-status {
+            color: #ffcc00;
+            margin-top: 10px;
+            font-size: 0.65rem;
+            text-align: center;
+        }
+        #adminPanel .admin-note {
+            margin-top: 10px;
+            font-size: 0.55rem;
+            color: #666;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 8px;
+        }
+        #adminPanel .clear-cache-btn {
+            background: #ff3366;
+            color: #fff;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.7rem;
+            transition: 0.2s;
+            margin-top: 8px;
+            width: 100%;
+        }
+        #adminPanel .clear-cache-btn:hover { opacity: 0.8; transform: scale(1.02); }
+        
         @media (max-width: 600px) {
             .wall-clock { width: 70px; height: 70px; }
             .hour-hand { height: 20px; }
             .minute-hand { height: 28px; }
             .second-hand { height: 32px; }
             .clock-number { font-size: 7px; }
+            .title-area .logo-img { width: 30px; height: 30px; }
             .title-area h1 { font-size: 0.9rem; }
             .reciter-profile { width: 40px; height: 40px; }
             .reciter-profile .avatar-text { font-size: 1.1rem; }
@@ -764,6 +938,8 @@
             .sync-btn { font-size: 0.5rem; padding: 4px 6px; }
             .drawer { width: 85%; }
             .top-row { flex-wrap: nowrap; gap: 6px; }
+            #adminPanel { max-width: 95%; left: 2.5%; bottom: 10px; padding: 15px; }
+            #adminPanel .reciters-list .reciter-item .link-preview { max-width: 60px; }
         }
         @media (max-width: 400px) {
             .prayer-times-row { gap: 3px; }
@@ -775,6 +951,7 @@
             .ctrl-btn.small-btn { width: 34px; height: 34px; font-size: 12px; }
             .ayah-text { font-size: 0.85rem; }
             .buttons-row { gap: 6px; padding: 6px; }
+            .title-area .logo-img { width: 26px; height: 26px; }
         }
         .neon-text { text-shadow: 0 0 8px #00ff88, 0 0 15px #00ff88; }
         .refresh-icon { cursor: pointer; margin-right: 6px; font-size: 0.65rem; transition: 0.2s; }
@@ -875,6 +1052,35 @@
         </div>
     </div>
 
+    <!-- ===== لوحة الإدارة المخفية ===== -->
+    <div id="adminPanel">
+        <h3>🛠️ إدارة صور المقرئين</h3>
+        <div class="reciters-list" id="recitersListDisplay">
+            <div style="color:#888; text-align:center;">جاري التحميل...</div>
+        </div>
+        
+        <div class="link-input-area" id="linkInputArea">
+            <label id="linkInputLabel">أدخل رابط الصورة للمقرئ: <span id="editingReciterName"></span></label>
+            <input type="text" id="linkInput" placeholder="https://example.com/image.jpg">
+            <div class="btn-row">
+                <button class="admin-btn" id="saveLinkBtn">💾 حفظ الرابط</button>
+                <button class="admin-btn danger" id="cancelLinkBtn">✖ إلغاء</button>
+            </div>
+        </div>
+        
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 10px;">
+            <button class="admin-btn warning" id="generateJsonBtn">📤 إنشاء JSON ورفع</button>
+            <button class="admin-btn danger" id="closeAdminBtn">✖ إغلاق</button>
+        </div>
+        
+        <button class="clear-cache-btn" id="clearCacheBtn">🗑️ مسح الكاش المحلي (localStorage)</button>
+        
+        <div class="admin-status" id="adminStatus"></div>
+        <div class="admin-note">
+            <i class="fas fa-info-circle"></i> اضغط على اسم المقرئ لتعديل صورته • اضغط 5 مرات على الشعار أو اللوغو لإظهار اللوحة
+        </div>
+    </div>
+
     <!-- المحتوى الرئيسي -->
     <main id="player">
         <header>
@@ -893,7 +1099,8 @@
                     </div>
                 </div>
                 <div class="title-area">
-                    <h1>✨ راديو مزامير داود ✨</h1>
+                    <img id="logoImg" class="logo-img" src="" alt="شعار التطبيق" style="display:none;">
+
                 </div>
                 <div class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></div>
             </div>
@@ -986,10 +1193,21 @@
             'use strict';
 
             // =======================================================
-            //  رابط ملف الصور على GitHub (عدّل هذا الرابط)
-            //  الملف يجب أن يكون على صيغة JSON: { "id": "url", ... }
+            //  رابط ملف الصور على GitHub
             // =======================================================
             const GITHUB_IMAGES_URL = 'https://raw.githubusercontent.com/univcours/mazamirdaoud4/refs/heads/main/reciters.json';
+            const LOGO_URL = 'https://raw.githubusercontent.com/univcours/mazamirdaoud4/refs/heads/main/logos.jpg';
+
+            // ===== تحميل اللوغو =====
+            function loadLogo() {
+                const logoImg = document.getElementById('logoImg');
+                logoImg.style.display = 'block';
+                logoImg.src = LOGO_URL;
+                logoImg.onerror = function() {
+                    this.style.display = 'none';
+                    console.warn('⚠️ فشل تحميل اللوغو، سيتم عرض النص بدلاً منه');
+                };
+            }
 
             // ===== دوال مساعدة =====
             function fitToScreen() {
@@ -1003,7 +1221,9 @@
                 const scaleX = (winWidth * 0.96) / baseWidth;
                 const scaleY = (winHeight * 0.96) / baseHeight;
                 const scale = Math.min(scaleX, scaleY);
-                player.style.transform = `scale(${scale})`;
+                if (scale < 1 && scale > 0) {
+                    player.style.transform = `scale(${scale})`;
+                }
             }
 
             window.addEventListener('resize', fitToScreen);
@@ -1031,7 +1251,7 @@
                 const t = document.getElementById('toastMessage');
                 t.textContent = msg;
                 t.classList.add('show');
-                setTimeout(() => t.classList.remove('show'), 2500);
+                setTimeout(() => t.classList.remove('show'), 3000);
             }
 
             // ===== الحصول على صورة رمزية من ui-avatars =====
@@ -1053,8 +1273,13 @@
             // ===== تحويل صورة WebP إلى PNG/JPG باستخدام Canvas =====
             function convertImageToPNG(imageUrl) {
                 return new Promise((resolve) => {
+                    let finalUrl = imageUrl;
+                    if (imageUrl.includes('assabile.com')) {
+                        finalUrl = `https://corsproxy.io/?${encodeURIComponent(imageUrl)}`;
+                    }
+                    
                     const img = new Image();
-                    img.crossOrigin = 'Anonymous';
+                    img.crossOrigin = 'anonymous';
                     
                     img.onload = function() {
                         try {
@@ -1063,8 +1288,6 @@
                             canvas.height = img.height;
                             const ctx = canvas.getContext('2d');
                             ctx.drawImage(img, 0, 0);
-                            
-                            // محاولة التصدير بصيغة PNG أولاً
                             let dataUrl = canvas.toDataURL('image/png');
                             resolve(dataUrl);
                         } catch (e) {
@@ -1078,11 +1301,11 @@
                         resolve(imageUrl);
                     };
                     
-                    img.src = imageUrl;
+                    img.src = finalUrl;
                 });
             }
 
-            // ===== تحميل قائمة المقرئين مع دمج الصور من GitHub وتحويل WebP =====
+            // ===== تحميل قائمة المقرئين مع دمج الصور من GitHub =====
             const RECITERS_API_URL = 'https://api.quran.com/api/v4/resources/recitations?language=ar';
             const PROFILE_PICS_API_URL = 'https://api.quran.com/api/v4/resources/reciters?language=ar';
             const RECITERS_CACHE_KEY = 'recitersListCache_v5';
@@ -1091,7 +1314,6 @@
             let recitersList = [];
 
             async function loadRecitersList(forceRefresh = false) {
-                // محاولة من الكاش أولاً
                 if (!forceRefresh) {
                     try {
                         const cached = JSON.parse(localStorage.getItem(RECITERS_CACHE_KEY) || 'null');
@@ -1102,7 +1324,6 @@
                     } catch(e) { }
                 }
 
-                // 1. جلب القائمة من API الرسمي (الأسماء والأساليب)
                 let recitersFromApi = [];
                 let imagesMapApi = {};
                 try {
@@ -1139,12 +1360,11 @@
                     console.warn('فشل جلب القائمة من API:', e);
                 }
 
-                // 2. جلب ملف الصور من GitHub
                 let imagesMapGitHub = {};
                 try {
                     const imgResp = await fetch(GITHUB_IMAGES_URL);
                     if (imgResp.ok) {
-                        imagesMapGitHub = await imgResp.json(); // { "1": "url", "7": "url", ... }
+                        imagesMapGitHub = await imgResp.json();
                         console.log('✅ تم تحميل صور GitHub:', Object.keys(imagesMapGitHub).length);
                     } else {
                         console.warn('⚠️ فشل تحميل صور GitHub (استجابة غير صحيحة)');
@@ -1153,16 +1373,12 @@
                     console.warn('⚠️ فشل تحميل صور GitHub:', e);
                 }
 
-                // 3. بناء القائمة النهائية: دمج الأسماء مع الصور (GitHub أولاً، ثم API، ثم رمزية)
                 if (recitersFromApi.length > 0) {
                     recitersList = recitersFromApi.map(r => {
                         let imgUrl = null;
-                        // نبحث في صور GitHub
                         if (imagesMapGitHub[r.id]) {
                             imgUrl = imagesMapGitHub[r.id];
-                        } 
-                        // إن لم توجد، نبحث في صور API
-                        else if (imagesMapApi[r.id]) {
+                        } else if (imagesMapApi[r.id]) {
                             let picPath = imagesMapApi[r.id];
                             if (picPath.startsWith('http://') || picPath.startsWith('https://')) {
                                 imgUrl = picPath;
@@ -1172,7 +1388,6 @@
                                 imgUrl = `https://static.qurancdn.com/images/${picPath}`;
                             }
                         }
-                        // إن لم توجد صورة على الإطلاق، نستعمل الصورة الرمزية
                         if (!imgUrl) {
                             imgUrl = getAvatarUrl(r.name);
                         }
@@ -1181,7 +1396,6 @@
                     localStorage.setItem(RECITERS_CACHE_KEY, JSON.stringify({ time: Date.now(), list: recitersList }));
                     return 'api_with_images';
                 } else {
-                    // في حالة فشل API، نستعمل قائمة احتياطية مع صور من GitHub إن أمكن
                     const FALLBACK = [
                         { id: 1, name: 'عبد الباسط عبد الصمد (مجوّد)' },
                         { id: 2, name: 'عبد الباسط عبد الصمد (مرتل)' },
@@ -1241,6 +1455,9 @@
             let gainNode = null;
             let filterNode = null;
             let playbackRate = 1.0;
+            
+            // متغيرات لوحة الإدارة
+            let editingReciterIndex = null;
 
             // ===== دوال الآيات والصوت =====
             async function fetchSurahVerses(surahIndex) {
@@ -1628,6 +1845,13 @@
                 
                 document.getElementById('ayahText').style.textShadow = `0 0 5px ${color}`;
                 
+                // تحديث حدود اللوغو
+                const logo = document.getElementById('logoImg');
+                if (logo) {
+                    logo.style.borderColor = borderColor;
+                    logo.style.boxShadow = `0 0 12px ${shadowColor}`;
+                }
+                
                 localStorage.setItem('themeColor', color);
             }
 
@@ -1673,6 +1897,9 @@
                 }
                 
                 async init() {
+                    // تحميل اللوغو
+                    loadLogo();
+                    
                     showLoading('جاري تحميل قائمة المقرئين...');
                     const source = await loadRecitersList();
                     this.populateReciters();
@@ -2002,14 +2229,19 @@
                 const avatarText = document.getElementById('avatarText');
                 
                 if (imageUrl) {
-                    // التحقق من صيغة الصورة وتحويلها إذا كانت WebP
                     let finalImageUrl = imageUrl;
-                    if (imageUrl.toLowerCase().includes('.webp') || imageUrl.toLowerCase().includes('webp')) {
+                    
+                    if (imageUrl.toLowerCase().includes('.webp') || 
+                        imageUrl.toLowerCase().includes('webp') ||
+                        imageUrl.includes('assabile.com')) {
                         try {
-                            // محاولة تحويل الصورة إلى PNG باستخدام Canvas
                             const convertedDataUrl = await convertImageToPNG(imageUrl);
-                            finalImageUrl = convertedDataUrl;
-                            console.log('✅ تم تحويل صورة WebP إلى PNG');
+                            if (convertedDataUrl && convertedDataUrl.startsWith('data:image')) {
+                                finalImageUrl = convertedDataUrl;
+                                console.log('✅ تم تحويل الصورة بنجاح');
+                            } else {
+                                finalImageUrl = imageUrl;
+                            }
                         } catch (e) {
                             console.warn('⚠️ فشل تحويل الصورة، استخدام الرابط الأصلي:', e);
                             finalImageUrl = imageUrl;
@@ -2019,7 +2251,9 @@
                     imgEl.style.display = 'block';
                     avatarText.style.display = 'none';
                     imgEl.src = finalImageUrl;
+                    
                     imgEl.onerror = function() {
+                        console.warn('⚠️ فشل تحميل الصورة، استخدام الرمز بدلاً منها');
                         this.style.display = 'none';
                         avatarText.style.display = 'block';
                         const cleanName = reciterName.replace(/\([^)]*\)/g, '').trim();
@@ -2178,7 +2412,6 @@
             // ===== تحديث الصور من GitHub =====
             document.getElementById('drawerRefreshGitHub').onclick = async () => {
                 showLoading('جاري تحديث الصور من GitHub...');
-                // نمسح الكاش لنجبر التحميل من جديد
                 localStorage.removeItem(RECITERS_CACHE_KEY);
                 const source = await loadRecitersList(true);
                 if (app) {
@@ -2190,7 +2423,6 @@
                         app.currentReciter = recitersList[0].id;
                         app.reciterSelect.value = app.currentReciter;
                     }
-                    // تحديث الصورة الحالية
                     const r = getReciterById(app.currentReciter);
                     if (r) await updateReciterSurahBar(r.name, SURAH_NAMES[app.currentSurah], r.image);
                 }
@@ -2309,7 +2541,7 @@
             };
             
             document.getElementById('drawerAbout').onclick = () => {
-                alert("🎵 راديو مزامير داود 🎵\n\n✨ الميزات:\n✓ قائمة المقرئين من API الرسمي\n✓ صور المقرئين من GitHub (قابلة للتخصيص)\n✓ توقيتات آيات رسمية\n✓ ساعة حائطية مضيئة\n✓ أوقات الصلاة\n✓ أزرار التزامن والإزاحة\n✓ مؤقت نوم\n✓ تعزيز الصوت\n✓ صور رمزية للحروف عند عدم توفر الصور\n✓ أزرار تحكم احترافية\n✓ تحويل تلقائي لصور WebP إلى PNG");
+                alert("🎵 راديو مزامير داود 🎵\n\n✨ الميزات:\n✓ قائمة المقرئين من API الرسمي\n✓ صور المقرئين من GitHub (قابلة للتخصيص)\n✓ توقيتات آيات رسمية\n✓ ساعة حائطية مضيئة\n✓ أوقات الصلاة\n✓ أزرار التزامن والإزاحة\n✓ مؤقت نوم\n✓ تعزيز الصوت\n✓ صور رمزية للحروف عند عدم توفر الصور\n✓ أزرار تحكم احترافية\n✓ تحويل تلقائي لصور WebP إلى PNG\n✓ لوحة إدارة مخفية لتعديل صور كل مقرئ على حدة\n✓ شعار التطبيق من logos.jpg");
             };
 
             // ===== ألوان الثيم =====
@@ -2339,6 +2571,247 @@
             startPrayerAutoUpdate();
             document.getElementById('prayerCityName').innerText = userCity;
             document.getElementById('locationText').innerHTML = `${userCity}، ${userCountry}`;
+
+            // =========================================================
+            //  نظام إدارة المقرئين السري (الزر المخفي)
+            // =========================================================
+            let adminClickCount = 0;
+            let adminTimer = null;
+
+            // تفعيل الزر المخفي بالضغط 5 مرات على الشعار أو اللوغو
+            function handleAdminClick(e) {
+                adminClickCount++;
+                if (adminTimer) clearTimeout(adminTimer);
+                adminTimer = setTimeout(() => { adminClickCount = 0; }, 2000);
+                
+                if (adminClickCount >= 5) {
+                    adminClickCount = 0;
+                    showAdminPanel();
+                    showToast('🔓 تم فتح لوحة الإدارة');
+                }
+            }
+
+            document.getElementById('appTitle').addEventListener('click', handleAdminClick);
+            document.getElementById('logoImg').addEventListener('click', handleAdminClick);
+
+            function showAdminPanel() {
+                const panel = document.getElementById('adminPanel');
+                panel.style.display = 'block';
+                renderRecitersList();
+                document.getElementById('adminStatus').innerHTML = '';
+                document.getElementById('linkInputArea').classList.remove('active');
+            }
+
+            function renderRecitersList() {
+                const displayDiv = document.getElementById('recitersListDisplay');
+                let html = '';
+                if (recitersList.length === 0) {
+                    html = '<div style="color:#888; text-align:center;">لا يوجد مقرئون، انتظر التحميل...</div>';
+                } else {
+                    recitersList.forEach((r, index) => {
+                        const linkPreview = r.image ? (r.image.length > 40 ? r.image.substring(0, 40) + '...' : r.image) : 'بدون صورة';
+                        html += `
+                            <div class="reciter-item" data-index="${index}">
+                                <span class="id-badge">ID: ${r.id}</span>
+                                <span class="name">${r.name}</span>
+                                <span class="link-preview" title="${r.image || ''}">${linkPreview}</span>
+                                <button class="edit-btn" data-index="${index}">✏️</button>
+                            </div>
+                        `;
+                    });
+                }
+                displayDiv.innerHTML = html;
+                
+                document.querySelectorAll('.reciter-item .edit-btn').forEach(btn => {
+                    btn.onclick = function(e) {
+                        e.stopPropagation();
+                        const index = parseInt(this.dataset.index);
+                        startEditingReciter(index);
+                    };
+                });
+                
+                document.querySelectorAll('.reciter-item .name').forEach(el => {
+                    el.parentElement.onclick = function() {
+                        const index = parseInt(this.dataset.index);
+                        startEditingReciter(index);
+                    };
+                });
+            }
+
+            function startEditingReciter(index) {
+                if (index < 0 || index >= recitersList.length) return;
+                editingReciterIndex = index;
+                const r = recitersList[index];
+                
+                document.getElementById('editingReciterName').textContent = `"${r.name}" (ID: ${r.id})`;
+                document.getElementById('linkInput').value = r.image || '';
+                document.getElementById('linkInputArea').classList.add('active');
+                document.getElementById('linkInput').focus();
+                document.getElementById('adminStatus').innerHTML = '';
+            }
+
+            document.getElementById('saveLinkBtn').onclick = function() {
+                if (editingReciterIndex === null || editingReciterIndex < 0 || editingReciterIndex >= recitersList.length) {
+                    showToast('⚠️ لم يتم اختيار مقرئ');
+                    return;
+                }
+                
+                const newLink = document.getElementById('linkInput').value.trim();
+                if (!newLink) {
+                    showToast('⚠️ الرابط لا يمكن أن يكون فارغاً');
+                    return;
+                }
+                
+                recitersList[editingReciterIndex].image = newLink;
+                
+                renderRecitersList();
+                document.getElementById('linkInputArea').classList.remove('active');
+                document.getElementById('adminStatus').innerHTML = '✅ تم تحديث الرابط محلياً';
+                document.getElementById('adminStatus').style.color = '#00ff88';
+                
+                if (app && app.currentReciter === recitersList[editingReciterIndex].id) {
+                    const r = recitersList[editingReciterIndex];
+                    updateReciterSurahBar(r.name, SURAH_NAMES[app.currentSurah], r.image);
+                }
+                
+                showToast(`✅ تم تحديث صورة ${recitersList[editingReciterIndex].name}`);
+                editingReciterIndex = null;
+            };
+
+            document.getElementById('cancelLinkBtn').onclick = function() {
+                document.getElementById('linkInputArea').classList.remove('active');
+                document.getElementById('adminStatus').innerHTML = '';
+                editingReciterIndex = null;
+            };
+
+            document.getElementById('closeAdminBtn').onclick = function() {
+                document.getElementById('adminPanel').style.display = 'none';
+                document.getElementById('linkInputArea').classList.remove('active');
+                editingReciterIndex = null;
+            };
+
+            // ===== زر مسح الكاش المحلي =====
+            document.getElementById('clearCacheBtn').onclick = function() {
+                if (confirm('🗑️ هل أنت متأكد من مسح جميع البيانات المخزنة محلياً؟\n(سيتم حذف صور المقرئين والإعدادات المحفوظة)')) {
+                    localStorage.removeItem(RECITERS_CACHE_KEY);
+                    localStorage.removeItem('themeColor');
+                    localStorage.removeItem('lastSurah');
+                    localStorage.removeItem('lastReciterId');
+                    localStorage.removeItem('radio_loop');
+                    localStorage.removeItem('radio_repeat');
+                    
+                    showToast('✅ تم مسح الكاش المحلي');
+                    document.getElementById('adminStatus').innerHTML = '✅ تم مسح الكاش المحلي بنجاح، سيتم إعادة تحميل الصفحة...';
+                    document.getElementById('adminStatus').style.color = '#00ff88';
+                    
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                }
+            };
+
+            document.getElementById('generateJsonBtn').onclick = async function() {
+                const statusDiv = document.getElementById('adminStatus');
+                statusDiv.innerHTML = '⏳ جاري المعالجة...';
+                statusDiv.style.color = '#ffcc00';
+                
+                try {
+                    const jsonData = {};
+                    recitersList.forEach(r => {
+                        jsonData[r.id] = r.image || '';
+                    });
+                    
+                    const jsonString = JSON.stringify(jsonData, null, 2);
+                    
+                    const token = prompt('🔑 أدخل GitHub Token الخاص بك (صلاحية repo):');
+                    if (!token) {
+                        statusDiv.innerHTML = '❌ تم الإلغاء';
+                        statusDiv.style.color = '#ff3366';
+                        return;
+                    }
+                    
+                    const repo = 'univcours/mazamirdaoud4';
+                    const path = 'reciters.json';
+                    const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
+                    
+                    statusDiv.innerHTML = '⏳ جاري جلب الملف الحالي...';
+                    const getResp = await fetch(apiUrl, {
+                        headers: {
+                            'Authorization': `token ${token}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    });
+                    
+                    let sha = null;
+                    if (getResp.ok) {
+                        const data = await getResp.json();
+                        sha = data.sha;
+                    } else if (getResp.status !== 404) {
+                        throw new Error(`فشل جلب الملف: ${getResp.status}`);
+                    }
+                    
+                    statusDiv.innerHTML = '⏳ جاري رفع الملف إلى GitHub...';
+                    const content = btoa(unescape(encodeURIComponent(jsonString)));
+                    
+                    const uploadData = {
+                        message: 'تحديث صور المقرئين من لوحة الإدارة',
+                        content: content,
+                        branch: 'main'
+                    };
+                    if (sha) uploadData.sha = sha;
+                    
+                    const uploadResp = await fetch(apiUrl, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `token ${token}`,
+                            'Accept': 'application/vnd.github.v3+json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(uploadData)
+                    });
+                    
+                    if (!uploadResp.ok) {
+                        const errorData = await uploadResp.json();
+                        throw new Error(`فشل الرفع: ${uploadResp.status} - ${errorData.message || 'خطأ غير معروف'}`);
+                    }
+                    
+                    statusDiv.innerHTML = '✅ تم تحديث الملف بنجاح على GitHub!';
+                    statusDiv.style.color = '#00ff88';
+                    showToast('✅ تم تحديث صور المقرئين بنجاح');
+                    
+                    localStorage.removeItem(RECITERS_CACHE_KEY);
+                    await loadRecitersList(true);
+                    
+                    if (app) {
+                        const savedReciter = app.currentReciter;
+                        app.populateReciters();
+                        if (getReciterById(savedReciter)) {
+                            app.reciterSelect.value = savedReciter;
+                        } else {
+                            app.currentReciter = recitersList[0].id;
+                            app.reciterSelect.value = app.currentReciter;
+                        }
+                        const r = getReciterById(app.currentReciter);
+                        if (r) await updateReciterSurahBar(r.name, SURAH_NAMES[app.currentSurah], r.image);
+                    }
+                    
+                    renderRecitersList();
+                    statusDiv.innerHTML = '✅ تم التحديث الكامل!';
+                    statusDiv.style.color = '#00ff88';
+                    
+                } catch (error) {
+                    console.error(error);
+                    statusDiv.innerHTML = `❌ خطأ: ${error.message}`;
+                    statusDiv.style.color = '#ff3366';
+                    showToast(`❌ فشل التحديث: ${error.message}`);
+                }
+            };
+
+            setTimeout(() => {
+                if (recitersList.length > 0) {
+                    renderRecitersList();
+                }
+            }, 2000);
 
         })();
     </script>
