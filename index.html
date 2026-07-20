@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -99,7 +100,13 @@
         .ayah-info { display: flex; justify-content: space-between; width: 100%; margin-top: 0.5vh; font-size: min(1.6vh, 0.6rem); color: #ffffff; }
         .ayah-progress { width: 100%; height: 3px; background: rgba(255,255,255,0.2); border-radius: 3px; margin-top: 1vh; overflow: hidden; flex-shrink: 0; }
         .ayah-progress-fill { width: 0%; height: 100%; background: #ffffff; transition: width 0.05s linear, background 0.3s; }
-        .toggle-ayah-btn { background: rgba(255, 255, 255, 0.2); border: 1px solid #ffffff; border-radius: 20px; padding: 0.5vh 1.5vw; color: #ffffff; font-size: min(1.6vh, 0.6rem); cursor: pointer; margin-top: 1vh; display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0; }
+        .toggle-ayah-btn { background: rgba(255, 255, 255, 0.2); border: 1px solid #ffffff; border-radius: 20px; padding: 0.5vh 1.5vw; color: #ffffff; font-size: min(1.6vh, 0.6rem); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0; }
+        
+        /* صف "توقيت دقيق" و "إخفاء الآيات" جنبا إلى جنب */
+        .ayah-controls-row { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 1vh; flex-wrap: nowrap; flex-shrink: 0; }
+        .timing-badge { display: none; align-items: center; gap: 4px; padding: 0.5vh 1.5vw; border-radius: 20px; font-size: min(1.6vh, 0.6rem); font-family: 'Orbitron', monospace; border: 1px solid; white-space: nowrap; flex-shrink: 0; }
+        .timing-badge.exact { color: #00ff88; border-color: #00ff88; background: rgba(0, 255, 136, 0.12); }
+        .timing-badge.approx { color: #ffcc00; border-color: #ffcc00; background: rgba(255, 204, 0, 0.12); }
         
         .sync-buttons { display: flex; justify-content: center; gap: 6px; margin: 0.5vh 1vw; flex-wrap: wrap; flex-shrink: 0; }
         .sync-btn { background: rgba(255, 255, 255, 0.15); border: 1px solid #ffffff; border-radius: 20px; padding: 0.5vh 1.5vw; color: #ffffff; font-size: min(1.6vh, 0.6rem); cursor: pointer; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
@@ -108,9 +115,16 @@
         .prayer-bar { background: rgba(0, 0, 0, 0.45); border-radius: 28px; margin: 0.5vh 1vw; padding: 1vh 2vw; text-align: center; border: 1px solid rgba(255, 255, 255, 0.3); flex-shrink: 0; }
         .prayer-title { color: #ffcc00; font-size: min(1.8vh, 0.7rem); margin-bottom: 0.6vh; font-weight: bold; }
         .prayer-times-row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px; margin-bottom: 0.5vh; }
-        .prayer-item { background: rgba(255, 255, 255, 0.1); border-radius: 18px; padding: 0.5vh; flex: 1; min-width: 0; text-align: center; }
+        .prayer-item { background: rgba(255, 255, 255, 0.1); border-radius: 18px; padding: 0.5vh; flex: 1; min-width: 0; text-align: center; transition: all 0.3s ease; }
         .prayer-name { font-size: min(1.5vh, 0.55rem); color: #aaa; }
         .prayer-time { font-size: min(2vh, 0.68rem); font-family: 'Orbitron', monospace; color: #ffffff; font-weight: bold; }
+        
+        /* الصلاة القادمة مضيئة بلون مختلف */
+        .prayer-item.next-prayer { background: linear-gradient(135deg, rgba(255, 204, 0, 0.3), rgba(255, 140, 0, 0.2)); border: 1.5px solid #ffcc00; box-shadow: 0 0 15px rgba(255, 204, 0, 0.6); animation: nextPrayerPulse 2s ease-in-out infinite; }
+        .prayer-item.next-prayer .prayer-name { color: #ffcc00 !important; font-weight: bold; }
+        .prayer-item.next-prayer .prayer-time { color: #ffcc00 !important; text-shadow: 0 0 8px #ffcc00 !important; }
+        @keyframes nextPrayerPulse { 0%, 100% { box-shadow: 0 0 10px rgba(255, 204, 0, 0.4); } 50% { box-shadow: 0 0 22px rgba(255, 204, 0, 0.8); } }
+        
         .next-prayer-text { font-size: min(1.6vh, 0.65rem); color: #ffcc00; margin-top: 0.5vh; background: rgba(0,0,0,0.3); border-radius: 18px; padding: 0.5vh; }
         
         .status-bar { display: flex; justify-content: space-between; padding: 0.8vh 2vw; background: rgba(0,0,0,0.35); border-radius: 25px; margin: 0.5vh 1vw; font-size: min(1.6vh, 0.6rem); color: #ffffff; flex-wrap: wrap; gap: 4px; flex-shrink: 0; }
@@ -158,6 +172,7 @@
         .city-modal.active, #addReciterModal.active { display: flex; }
         .city-modal-content, .modal-content { background: linear-gradient(145deg, #111, #000); border: 2px solid #ffffff; border-radius: 30px; padding: 20px; width: 90%; max-width: 350px; max-height: 80vh; overflow-y: auto; }
         .city-modal-content input, .modal-content input { width: 100%; padding: 12px; margin: 10px 0; background: rgba(0, 0, 0, 0.7); border: 1px solid #ffffff; border-radius: 25px; color: #ffffff; font-family: 'Cairo', sans-serif; font-size: 1rem; }
+        .city-modal-hint { color: #ffcc00; font-size: 0.65rem; text-align: center; margin-top: 4px; }
     </style>
 </head>
 <body>
@@ -207,7 +222,8 @@
         <div class="city-modal-content">
             <h3 style="color:#ffffff; text-align:center;"><i class="fas fa-map-marker-alt"></i> اختر مدينتك</h3>
             <input type="text" id="cityInput" placeholder="اسم المدينة (مثال: Casablanca)">
-            <input type="text" id="countryInput" placeholder="اسم البلد (مثال: Morocco)">
+            <input type="text" id="countryInput" placeholder="اسم البلد (اختياري - يُجلب تلقائيًا)">
+            <div class="city-modal-hint"><i class="fas fa-info-circle"></i> اكتب المدينة فقط وسيتم جلب الدولة أوتوماتيكيًا</div>
             <div class="drawer-grid" style="margin-top: 15px;">
                 <div class="drawer-btn" id="saveCityBtn">حفظ</div>
                 <div class="drawer-btn" id="closeCityBtn">إلغاء</div>
@@ -266,8 +282,11 @@
             <div class="ayah-progress">
                 <div class="ayah-progress-fill" id="ayahProgressFill"></div>
             </div>
-            <span class="timing-badge exact" id="timingBadge" style="display:none;"></span>
-            <div class="toggle-ayah-btn" id="toggleAyahBtn"><i class="fas fa-eye"></i> إخفاء الآيات</div>
+            <!-- توقيت دقيق و إخفاء الآيات جنبا إلى جنب -->
+            <div class="ayah-controls-row">
+                <span class="timing-badge exact" id="timingBadge" style="display:none;"></span>
+                <div class="toggle-ayah-btn" id="toggleAyahBtn"><i class="fas fa-eye"></i> إخفاء الآيات</div>
+            </div>
         </div>
         
         <div class="sync-buttons">
@@ -348,6 +367,23 @@
                     const data = await response.json();
                     return { city: data.city || data.locality || 'Casablanca', country: data.countryName || 'Morocco', lat: latitude, lng: longitude };
                 } catch (error) { return null; }
+            }
+
+            // جلب الدولة والإحداثيات أوتوماتيكيا من اسم المدينة
+            async function geocodeCity(city, country) {
+                try {
+                    const query = country ? `${city}, ${country}` : city;
+                    const resp = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&addressdetails=1&accept-language=ar`);
+                    const data = await resp.json();
+                    if (data && data.length > 0) {
+                        return {
+                            lat: parseFloat(data[0].lat),
+                            lng: parseFloat(data[0].lon),
+                            country: (data[0].address && data[0].address.country) ? data[0].address.country : country
+                        };
+                    }
+                } catch(e) {}
+                return null;
             }
 
             let loadingTimeout = null;
@@ -499,9 +535,9 @@
             function setTimingBadge(mode) {
                 const badge = document.getElementById('timingBadge');
                 if (mode === 'exact') {
-                    badge.style.display = 'inline-block'; badge.className = 'timing-badge exact'; badge.innerHTML = '<i class="fas fa-check-circle"></i> توقيت دقيق';
+                    badge.style.display = 'inline-flex'; badge.className = 'timing-badge exact'; badge.innerHTML = '<i class="fas fa-check-circle"></i> توقيت دقيق';
                 } else if (mode === 'approx') {
-                    badge.style.display = 'inline-block'; badge.className = 'timing-badge approx'; badge.innerHTML = '<i class="fas fa-wave-square"></i> توقيت تقريبي';
+                    badge.style.display = 'inline-flex'; badge.className = 'timing-badge approx'; badge.innerHTML = '<i class="fas fa-wave-square"></i> توقيت تقريبي';
                 } else { badge.style.display = 'none'; }
             }
 
@@ -639,6 +675,14 @@
                 }
                 
                 if (nextPrayer) {
+                    // إضاءة الصلاة القادمة بلون مختلف
+                    prayers.forEach(p => {
+                        const el = document.getElementById(p.id);
+                        if (el) el.classList.remove('next-prayer');
+                    });
+                    const nextEl = document.getElementById(nextPrayer.id);
+                    if (nextEl) nextEl.classList.add('next-prayer');
+                    
                     const hours = Math.floor(smallestDiff / 60);
                     const minutes = smallestDiff % 60;
                     let timeText = hours > 0 ? `${hours} س ` : "";
@@ -678,11 +722,17 @@
                 clock.style.borderColor = borderColor;
                 clock.style.boxShadow = `0 0 12px ${borderColor}, 0 0 25px ${shadowColor}`;
                 
-                document.querySelectorAll('.reciter-info span, .surah-info span, .date-info, .status-bar, .ayah-info, .prayer-time, .time-box, .dua-text, .drawer-header h3, .drawer-note, .download-icon-btn i').forEach(el => {
+                document.querySelectorAll('.reciter-info span, .surah-info span, .date-info, .status-bar, .ayah-info, .time-box, .dua-text, .drawer-header h3, .drawer-note, .download-icon-btn i').forEach(el => {
                     el.style.color = color;
-                    if (el.classList.contains('prayer-time') || el.classList.contains('time-box') || el.classList.contains('dua-text')) {
+                    if (el.classList.contains('time-box') || el.classList.contains('dua-text')) {
                         el.style.textShadow = `0 0 5px ${color}`;
                     }
+                });
+                
+                // تطبيق اللون على أوقات الصلاة ما عدا الصلاة القادمة (تبقى ذهبية)
+                document.querySelectorAll('.prayer-item:not(.next-prayer) .prayer-time').forEach(el => {
+                    el.style.color = color;
+                    el.style.textShadow = `0 0 5px ${color}`;
                 });
                 
                 const thumbStyle = document.createElement('style');
@@ -710,8 +760,6 @@
                 document.querySelectorAll('select').forEach(sel => { sel.style.borderColor = borderColor; sel.style.color = color; });
                 document.querySelector('.toggle-ayah-btn').style.borderColor = borderColor;
                 document.querySelector('.toggle-ayah-btn').style.color = color;
-                
-                document.querySelectorAll('.timing-badge.exact').forEach(b => { b.style.color = color; b.style.borderColor = color; b.style.background = color + '20'; });
                 
                 document.getElementById('prayerBar').style.borderColor = borderColor;
                 document.querySelector('.pro-tools').style.borderColor = borderColor;
@@ -1039,6 +1087,70 @@
             menuBtn.onclick = () => { drawerOverlay.classList.add('active'); drawer.classList.add('active'); };
             document.getElementById('closeDrawerBtn').onclick = () => { drawerOverlay.classList.remove('active'); drawer.classList.remove('active'); };
             drawerOverlay.onclick = (e) => { if (e.target === drawerOverlay) { drawerOverlay.classList.remove('active'); drawer.classList.remove('active'); } };
+
+            function closeDrawer() { drawerOverlay.classList.remove('active'); drawer.classList.remove('active'); }
+
+            // ===== التحديث اليدوي للمدينة مع جلب الدولة أوتوماتيكيا =====
+            const cityModal = document.getElementById('cityModal');
+            
+            document.getElementById('drawerChangeCity').onclick = () => {
+                closeDrawer();
+                document.getElementById('cityInput').value = userCity;
+                document.getElementById('countryInput').value = userCountry;
+                cityModal.classList.add('active');
+            };
+            
+            document.getElementById('closeCityBtn').onclick = () => cityModal.classList.remove('active');
+            cityModal.onclick = (e) => { if (e.target === cityModal) cityModal.classList.remove('active'); };
+            
+            document.getElementById('saveCityBtn').onclick = async () => {
+                const city = document.getElementById('cityInput').value.trim();
+                let country = document.getElementById('countryInput').value.trim();
+                if (!city) { showToast('⚠️ الرجاء إدخال اسم المدينة'); return; }
+                
+                cityModal.classList.remove('active');
+                showLoading('جاري البحث عن المدينة...');
+                
+                // جلب الدولة والإحداثيات أوتوماتيكيا من اسم المدينة
+                const geo = await geocodeCity(city, country);
+                if (geo && geo.country) country = geo.country;
+                if (!country) country = userCountry;
+                
+                userCity = city;
+                userCountry = country;
+                localStorage.setItem('prayerCity', userCity);
+                localStorage.setItem('prayerCountry', userCountry);
+                document.getElementById('prayerCityName').innerText = userCity;
+                
+                hideLoading();
+                
+                if (geo && geo.lat && geo.lng) await fetchPrayerTimes(geo.lat, geo.lng);
+                else await fetchPrayerTimes();
+                
+                document.getElementById('prayerCityName').innerText = userCity;
+                showToast(`✅ تم التحديث: ${userCity} - ${userCountry}`);
+            };
+            
+            // زر تحديث الموقع أوتوماتيكيا
+            document.getElementById('drawerAutoLocation').onclick = async () => {
+                closeDrawer();
+                showLoading('جاري تحديد موقعك...');
+                const location = await getUserLocation();
+                hideLoading();
+                if (location) {
+                    userCity = location.city;
+                    userCountry = location.country;
+                    localStorage.setItem('prayerCity', userCity);
+                    localStorage.setItem('prayerCountry', userCountry);
+                    document.getElementById('prayerCityName').innerText = userCity;
+                    await fetchPrayerTimes(location.lat, location.lng);
+                    document.getElementById('prayerCityName').innerText = userCity;
+                    showToast(`📍 تم تحديد موقعك: ${userCity}`);
+                } else {
+                    showToast('❌ تعذر تحديد الموقع - فعّل خدمة الموقع');
+                    await fetchPrayerTimes();
+                }
+            };
 
             const colors = ['#ffffff', '#00ff88', '#ff3366', '#ffcc00', '#0066ff', '#aa00ff'];
             document.querySelectorAll('#drawerColorPalette .drawer-color-dot').forEach((dot, idx) => {
